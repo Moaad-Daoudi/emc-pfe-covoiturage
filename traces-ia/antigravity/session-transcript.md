@@ -32,3 +32,23 @@
 - Successfully bootstrapped Symfony 7.4.23 skeleton and installed full webapp/orm packs.
 - Tested and verified database connectivity to MySQL 8.0: database `covoiturage` created and verified.
 - Handled Flex automated recipes cleanly (resolved PostgreSQL conflicts injected by Doctrine Flex recipe).
+
+
+---
+
+## Session 04 — Back-Office Administration & Authentication Setup (T-104 & S11/S12)
+
+- **Back-Office Implementation (`/admin`):**
+  - Integrated `easycorp/easyadmin-bundle` with a dedicated `DashboardController`.
+  - Built 6 complete CRUD controllers:
+    - `CityCrudController`: Moroccan cities with GPS latitude & longitude formatting.
+    - `UserCrudController`: User management, email, names, phone numbers, and roles.
+    - `VehicleCrudController`: Fleet management with owner relation, seats, air conditioning.
+    - `TripCrudController`: Trajets with departure/arrival cities, departure dates, seat counts, price, and status enum.
+    - `BookingCrudController`: Reservations with boarding/alighting stops, seat counts, total price, and status enum.
+    - `ReviewCrudController`: User ratings (1 to 5) and feedback moderation.
+  - Enforced strict access control in `security.yaml` with `ROLE_ADMIN` protection on `^/admin`.
+- **Authentication & Testing Ergonomics (S11):**
+  - Scaffolded `SecurityController` with `/login` and `/logout`.
+  - Created a custom styled Tailwind login view (`templates/security/login.html.twig`) with a **1-Click Demo Login** component pre-filling credentials for all 4 jury test accounts (`admin@covoit.ma`, `amina@covoit.ma`, `karim@covoit.ma`, `youssef@covoit.ma` with password `Demo1234!`).
+  - Added dynamic authentication header in `templates/base.html.twig` showing current user and direct access to `/admin` for administrators.

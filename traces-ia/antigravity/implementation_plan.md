@@ -7,11 +7,11 @@
 - [x] Verify database connection and push the initial Git commit.
 
 ## Sprint 1: Level 1 — Domain Model & Back-Office
-- [ ] Entities: `User`, `Vehicle`, `City`, `Trip`, `TripStop`, `TripSegment`, `Booking`, `BookingSegment`, `Review`.
-- [ ] Doctrine Migrations & MySQL 8.0 schema validation.
-- [ ] `AppFixtures` with FakerPHP: Moroccan cities, 4 demo accounts, and multi-stop journeys.
-- [ ] Install EasyAdmin 4 (`/admin`) for domain object administration.
-- [ ] Mermaid ER Diagram in `docs/MODELE.md`.
+- [x] Entities: `User`, `Vehicle`, `City`, `Trip`, `TripStop`, `TripSegment`, `Booking`, `BookingSegment`, `Review`.
+- [x] Doctrine Migrations & MySQL 8.0 schema validation.
+- [x] `AppFixtures` with FakerPHP: Moroccan cities, 4 demo accounts, and multi-stop journeys.
+- [x] Install EasyAdmin 4 (`/admin`) for domain object administration.
+- [x] Mermaid ER Diagram in `docs/MODELE.md`.
 
 ## Sprint 2: Level 2 — Concurrency, Business Rules & Tests
 - [ ] `BookingService` with ACID transaction and pessimistic locking (`PESSIMISTIC_WRITE`).

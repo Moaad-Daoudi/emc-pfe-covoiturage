@@ -45,7 +45,15 @@
                 <nav class="flex items-center gap-4 text-sm font-medium">
                     <a href="{{ path('app_home') }}" class="text-slate-700 hover:text-brand-600 transition">Rechercher</a>
                     <a href="#publish" class="text-slate-700 hover:text-brand-600 transition">Publier un trajet</a>
-                    <a href="/login" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">Connexion</a>
+                    {% if app.user %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('admin') }}" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm transition">⚙️ Back-Office</a>
+                        {% endif %}
+                        <span class="text-slate-600 text-xs font-medium">{{ app.user.firstname }}</span>
+                        <a href="{{ path('app_logout') }}" class="text-rose-600 hover:text-rose-700 text-xs transition">Déconnexion</a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">Connexion</a>
+                    {% endif %}
                 </nav>
             </div>
         </header>
