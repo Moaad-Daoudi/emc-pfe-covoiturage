@@ -172,12 +172,13 @@ flowchart LR
   - Interactive "Marquer comme terminé" action enabling immediate review eligibility for evaluators.
   - Driver cancellation action with 100% passenger refund cascade via `CancellationService`.
   - S07: Official passenger manifest with stop-by-stop passenger check-in and printable boarding sheet.
-- [ ] **T-308: Screens S08 & S09 — Public Profiles & Review System (`/users/{id}`, `/trips/{id}/review`)**
-  - S08: Public profile with calculated average ratings, verified driver badges, and review list.
-  - S09: 5-star rating form with commentary, guarded by `ReviewVoter`.
-- [ ] **T-309: Screen S10 — Account & Vehicle Management (`/account`)**
-  - Profile settings and vehicle management (enables any user to register a car and publish trips).
-- [ ] **T-310: Screen S11 — Authentication & 1-Click Demo Login (`/login`)**
+- [x] **T-308: Screens S08 & S09 — Public Profiles & Review System (`/users/{id}`, `/trips/{id}/review`)**
+  - S08: Public profile matching Stitch AI prototype (`stitch_s08_user_profile.png`) with calculated average ratings breakdown (5.0 conduite, 5.0 communication, 4.9 propreté, 4.8 ambiance), verified driver badges (CNI CNDP, Permis B, Assurance AXA), registered vehicles list, and chronological passenger review cards.
+  - S09: 5-star rating form matching Stitch AI prototype (`stitch_s09_trip_review.png`) with positive highlight pills, structured criteria evaluation, dynamic comment counter, and business validation via `ReviewManager`.
+- [x] **T-309: Screen S10 — Account & Vehicle Management (`/account`)**
+  - Profile settings and vehicle management matching Stitch AI prototype (`stitch_s10_account_settings.png`): personal details form, Moroccan license plate styled vehicle cards with comfort options, dynamic vehicle addition modal/card, and CNDP regulatory compliance banner.
+- [x] **T-310: Screen S11 — Authentication & 1-Click Demo Login (`/login`)**
+  - High-end authentication interface matching Stitch AI prototype (`stitch_s11_login_demo.png`): credentials form, "Se souvenir de moi", and 4 interactive 1-click evaluation buttons (`Amina · Dual`, `Karim · Conducteur`, `Youssef · Passager`, `Admin · Back-office`) pre-filling credentials for instant jury evaluation.
   - Standard Symfony login form.
   - **Jury Quick-Test Box**: 4 buttons that prefill credentials for `Admin`, `Amina (Dual)`, `Karim (Driver)`, and `Youssef (Passenger)`.
 

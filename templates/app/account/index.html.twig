@@ -1,0 +1,314 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte & Paramètres — SafarCar Maroc{% endblock %}
+
+{% block body %}
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+
+    <!-- Header & Verified Pill -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/60">
+        <div>
+            <div class="flex items-center gap-2 text-xs text-slate-400 font-medium mb-1">
+                <a href="{{ path('app_home') }}" class="hover:text-emerald-700">Accueil</a>
+                <span>/</span>
+                <span class="text-slate-700 font-bold">Mon compte</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                Mon compte & Paramètres
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                Gérez vos informations personnelles, vos préférences de voyage et vos véhicules pour proposer des trajets.
+            </p>
+        </div>
+
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold shrink-0">
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Profil Vérifié CNI & Permis
+        </span>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="flex items-center gap-2 border-b border-slate-200 pb-1 text-xs sm:text-sm">
+        <button type="button" class="px-4 py-2.5 rounded-2xl font-bold bg-white text-slate-900 border border-slate-200 shadow-2xs flex items-center gap-2">
+            <span>👤</span>
+            <span>Informations personnelles</span>
+        </button>
+        <button type="button" class="px-4 py-2.5 rounded-2xl font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-2 transition">
+            <span>🚗</span>
+            <span>Mes véhicules ({{ vehicles|length }})</span>
+        </button>
+        <button type="button" class="px-4 py-2.5 rounded-2xl font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-2 transition">
+            <span>🔒</span>
+            <span>Sécurité & Mot de passe</span>
+        </button>
+        <button type="button" class="px-4 py-2.5 rounded-2xl font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-2 transition">
+            <span>🔔</span>
+            <span>Préférences & Notifications</span>
+        </button>
+    </div>
+
+    <!-- Section 1: Profil public & Coordonnées -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+        <div>
+            <h2 class="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                <span class="text-emerald-600">👤</span>
+                <span>Profil public & Coordonnées</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5">
+                Ces détails figurent sur votre fiche conducteur et passager visible par la communauté certifiée SafarCar.
+            </p>
+        </div>
+
+        <!-- Avatar Change Row -->
+        <div class="flex flex-col sm:flex-row sm:items-center gap-5 p-4 rounded-2xl bg-slate-50 border border-slate-200/70">
+            <div class="relative shrink-0">
+                <div class="w-16 h-16 rounded-full bg-slate-900 text-white font-extrabold text-xl flex items-center justify-center border-2 border-emerald-500 shadow-sm">
+                    {{ user.firstname|first|upper }}{{ user.lastname|first|upper }}
+                </div>
+                <span class="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold border border-white">
+                    ✓
+                </span>
+            </div>
+
+            <div class="space-y-1.5 flex-1">
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="alert('Module de mise à jour photo CNDP')"
+                        class="px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-2xs">
+                        <span>📷</span>
+                        <span>Changer la photo</span>
+                    </button>
+                    <button type="button" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 text-xs font-semibold transition">
+                        Supprimer
+                    </button>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-relaxed">
+                    Formats acceptés : JPG, PNG (max 5 Mo). Privilégiez une photo de face bien éclairée sans lunettes de soleil.
+                </p>
+            </div>
+        </div>
+
+        <!-- Profile Form -->
+        <form action="{{ path('app_account_update') }}" method="POST" class="space-y-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-600">Prénom</label>
+                        <span class="text-[10px] font-bold text-emerald-700">CERTIFIÉ CNI</span>
+                    </div>
+                    <input type="text" value="{{ user.firstname }}" disabled
+                        class="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 cursor-not-allowed">
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-600">Nom</label>
+                        <span class="text-[10px] font-bold text-emerald-700">CERTIFIÉ CNI</span>
+                    </div>
+                    <input type="text" value="{{ user.lastname }}" disabled
+                        class="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 cursor-not-allowed">
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-600">Adresse e-mail</label>
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">✓ VÉRIFIÉE</span>
+                    </div>
+                    <input type="email" value="{{ user.email }}" disabled
+                        class="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 cursor-not-allowed">
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-600">Téléphone mobile</label>
+                        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">✓ SMS VÉRIFIÉ</span>
+                    </div>
+                    <input type="tel" name="phone" value="{{ user.phone|default('+212 6 61 98 76 54') }}" required
+                        class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Ville principale de résidence</label>
+                    <input type="text" value="Agadir, Maroc"
+                        class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800">
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-600">Date de naissance</label>
+                        <span class="text-[10px] text-slate-400">Majeur requis</span>
+                    </div>
+                    <input type="date" value="1993-05-14"
+                        class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800">
+                </div>
+            </div>
+
+            <!-- Biography -->
+            <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                    <label for="user-bio" class="text-xs font-bold uppercase tracking-wider text-slate-600">
+                        Biographie & Conduite
+                    </label>
+                    <span class="text-[11px] text-slate-400">246 / 500 caractères</span>
+                </div>
+                <textarea id="user-bio" name="bio" rows="3" maxlength="500"
+                    class="w-full p-4 rounded-2xl border border-slate-200 bg-slate-50 text-xs sm:text-sm font-medium text-slate-800 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition leading-relaxed">{{ user.bio|default("Passionnée de voyages et d'échanges culturels. Je fais régulièrement la navette entre Agadir, Essaouira et Marrakech pour des raisons professionnelles. Conduite souple, ponctualité rigoureuse, musique douce et respect total de l'espace de chacun.") }}</textarea>
+                <p class="text-[11px] text-slate-400">
+                    Présentez brièvement vos habitudes de conduite et ce que vous appréciez durant les trajets partagés.
+                </p>
+            </div>
+
+            <!-- Boarding Preferences Checkboxes -->
+            <div class="pt-2 border-t border-slate-100 space-y-2.5">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-600 block">
+                    Préférences de bord (visibles sur vos offres de covoiturage)
+                </span>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 cursor-pointer">
+                        <span>🚭 Non-fumeur</span>
+                        <input type="checkbox" checked class="w-4 h-4 text-emerald-600 rounded">
+                    </label>
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 cursor-pointer">
+                        <span>🐾 Animaux refusés</span>
+                        <input type="checkbox" checked class="w-4 h-4 text-emerald-600 rounded">
+                    </label>
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 cursor-pointer">
+                        <span>🎵 Musique acceptée</span>
+                        <input type="checkbox" checked class="w-4 h-4 text-emerald-600 rounded">
+                    </label>
+                    <label class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 cursor-pointer">
+                        <span>💬 Discussions</span>
+                        <input type="checkbox" checked class="w-4 h-4 text-emerald-600 rounded">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit Row -->
+            <div class="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-slate-100">
+                <span class="text-xs text-slate-400 flex items-center gap-1.5">
+                    <span>☁</span> Modifications synchronisées instantanément
+                </span>
+                <button type="submit"
+                    class="px-6 py-3 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-sm shadow-md shadow-emerald-700/20 hover:scale-[1.01] transition">
+                    Enregistrer les modifications
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Section 2: Mes véhicules pour covoiturer -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+            <div>
+                <h2 class="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                    <span class="text-emerald-600">🚘</span>
+                    <span>Mes véhicules pour covoiturer</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">
+                    Déclarez vos véhicules pour publier des trajets et rentabiliser vos déplacements interurbains en toute légalité.
+                </p>
+            </div>
+
+            <button type="button" onclick="document.getElementById('modal-add-vehicle').classList.toggle('hidden')"
+                class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition shrink-0 shadow-2xs">
+                <span>⊕</span>
+                <span>Ajouter un véhicule</span>
+            </button>
+        </div>
+
+        <!-- Vehicle Cards List -->
+        <div class="space-y-4">
+            <!-- Vehicle 1: Peugeot 208 -->
+            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
+                <div class="flex items-start sm:items-center gap-4">
+                    <div class="w-20 h-16 rounded-xl bg-slate-200 overflow-hidden shrink-0 flex items-center justify-center text-2xl border border-slate-300">
+                        🚗
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">Principal</span>
+                            <span class="font-extrabold text-base text-slate-900">Peugeot 208 · Allure 1.2 PureTech</span>
+                            <span class="text-xs text-slate-400">Gris Métallisé (2022)</span>
+                        </div>
+
+                        <!-- Plate badge -->
+                        <div class="inline-flex items-center px-2.5 py-0.5 rounded bg-white border border-slate-300 text-xs font-mono font-bold tracking-wider text-slate-800 shadow-2xs">
+                            <span>26842</span> <span class="mx-1 text-slate-300">|</span> <span>33</span> <span class="mx-1 text-slate-300">|</span> <span class="text-[10px] text-slate-500 font-sans">MAROC</span>
+                        </div>
+
+                        <div class="text-xs text-slate-500 flex flex-wrap items-center gap-3 pt-1">
+                            <span>👤 4 places passagers (max 2 à l'arrière)</span>
+                            <span>•</span>
+                            <span>❄ Climatisation régulée</span>
+                            <span>•</span>
+                            <span>🧳 Coffre spacieux</span>
+                        </div>
+
+                        <div class="text-[11px] text-emerald-700 font-medium pt-0.5">
+                            ✓ Contrôle technique valide jusqu'en 11/2026 · Assurance AXA vérifiée
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 self-end md:self-center">
+                    <button type="button" class="p-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 transition" title="Modifier">
+                        ✏️
+                    </button>
+                    <button type="button" class="p-2 rounded-lg border border-slate-200 bg-white hover:bg-rose-50 text-slate-600 transition" title="Supprimer">
+                        🗑️
+                    </button>
+                </div>
+            </div>
+
+            <!-- Vehicle 2: Dacia Duster -->
+            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
+                <div class="flex items-start sm:items-center gap-4">
+                    <div class="w-20 h-16 rounded-xl bg-slate-200 overflow-hidden shrink-0 flex items-center justify-center text-2xl border border-slate-300">
+                        🚙
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="font-extrabold text-base text-slate-900">Dacia Duster · 1.5 dCi Prestige 4x2</span>
+                            <span class="text-xs text-slate-400">Blanc Nacré (2021)</span>
+                        </div>
+
+                        <!-- Plate badge -->
+                        <div class="inline-flex items-center px-2.5 py-0.5 rounded bg-white border border-slate-300 text-xs font-mono font-bold tracking-wider text-slate-800 shadow-2xs">
+                            <span>45678</span> <span class="mx-1 text-slate-300">|</span> <span>33</span> <span class="mx-1 text-slate-300">|</span> <span class="text-[10px] text-slate-500 font-sans">MAROC</span>
+                        </div>
+
+                        <div class="text-xs text-slate-500 flex flex-wrap items-center gap-3 pt-1">
+                            <span>👤 3 places proposées</span>
+                            <span>•</span>
+                            <span>🧳 Grand coffre tout terrain</span>
+                            <span>•</span>
+                            <span>⛰ Idéal trajets Haut-Atlas</span>
+                        </div>
+
+                        <div class="text-[11px] text-amber-700 font-medium pt-0.5">
+                            ⏳ En attente de mise à jour carte grise
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 self-end md:self-center">
+                    <button type="button" class="p-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 transition" title="Modifier">
+                        ✏️
+                    </button>
+                    <button type="button" class="p-2 rounded-lg border border-slate-200 bg-white hover:bg-rose-50 text-slate-600 transition" title="Supprimer">
+                        🗑️
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Regulatory Compliance Banner -->
+    <div class="p-5 rounded-3xl bg-slate-50 border border-slate-200/80 flex items-center gap-3 text-xs text-slate-600">
+        <span class="text-emerald-700 text-lg shrink-0">🛡</span>
+        <p class="leading-relaxed">
+            <strong>Assurance responsabilité & Conformité réglementaire :</strong> Tout véhicule publié sur SafarCar doit être titulaire d'une carte grise en règle et d'un contrôle technique à jour. Les passagers sont automatiquement couverts par l'assurance responsabilité civile partenaire tout au long du trajet déclaré.
+        </p>
+    </div>
+
+</div>
+{% endblock %}
