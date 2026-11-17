@@ -140,10 +140,12 @@ flowchart LR
   - Trust & Quality Metrics Bar: 15 000+ rides, 4.9/5 rating, 100% CNI/Permis verified, 0 DH hidden fees.
   - Two-column search results: filter sidebar (time slots, price range slider, AC/luggage/female-driver toggles) + trip cards with detailed timelines, urgency badges ("Dernière place disponible !"), driver badges, vehicle specs, and "Garantie Prix Équitable".
   - "Pourquoi choisir SafarCar ?" value-proposition cards and "Ce que disent nos voyageurs" community testimonial section matching the Stitch AI prototype.
-- [ ] **T-303: Screen S02 — Trip Details & Segment Booking (`/trips/{id}`)**
-  - Visual timeline of stops and departure times.
-  - Interactive boarding/drop-off stop selector with dynamic pricing and seat count updates.
-  - Map container for Leaflet/OSRM integration.
+- [x] **T-303: Screen S02 — Trip Details & Segment Booking (`/trips/{id}`)**
+  - Trip header banner with emerald glow, LIGNE EXPRESS badge, CO₂ footprint reduction (-68%), and instantaneous booking guarantee.
+  - Interactive Leaflet.js map with numbered markers for each city stop and road polyline.
+  - Step-by-step segment timeline with stop badges, meeting addresses, and dynamic urgency badges ("1 seule place restante").
+  - Driver profile card with photo initials, "SUPER CONDUCTEUR" badge, rating stars, verification pills (CNI, Permis >5 ans, Assurance), and 5-card comfort grid (AC, luggage, 2 back, non-smoker).
+  - Sticky interactive booking configuration module with client-side reactive sub-trip matrix: changing origin and destination dynamically recalculates price, bottleneck capacity, distance, and warning alerts without page reload.
 - [ ] **T-304: Screen S03 — Simulated Checkout (`/bookings/{id}/checkout`)**
   - Clean summary, policy reminders, and one-click transactional booking trigger.
 - [ ] **T-305: Screen S04 — Passenger Dashboard (`/my/bookings`)**

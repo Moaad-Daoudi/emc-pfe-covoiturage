@@ -23,7 +23,7 @@
 ## Sprint 3: Level 3 — Product & 11 UI Screens
 - [x] T-301: Base Layout & Design System (`templates/base.html.twig`, Tailwind emerald/forest palette, Plus Jakarta Sans, navbar, footer).
 - [x] T-302: Screen S01 — Home & Search Experience (`/`) matching Stitch AI prototype (Hero, trust metrics bar, filter sidebar, sub-segment search cards, value props, testimonials).
-- [ ] T-303: Screen S02 — Trip Details & Segment Booking (`/trips/{id}`).
+- [x] T-303: Screen S02 — Trip Details & Segment Booking (`/trips/{id}`) matching Stitch AI prototype (Interactive Leaflet map, segment availability timeline, driver specs, sticky reactive booking module).
 - [ ] T-304: Screen S03 — Simulated Checkout (`/bookings/{id}/checkout`).
 - [ ] T-305: Screen S04 — Passenger Dashboard (`/my/bookings`).
 - [ ] T-306: Screen S05 — Publish a Trip (`/driver/trips/new`).

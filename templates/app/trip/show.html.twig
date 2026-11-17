@@ -1,0 +1,656 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ trip.departureCity.name }} → {{ trip.arrivalCity.name }} — SafarCar Maroc{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);
+            font-family: inherit;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="bg-[#f8fafc] py-6 sm:py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+
+        <!-- 1. Breadcrumbs & Status Bar -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2 text-slate-500 flex-wrap">
+                <a href="{{ path('app_home') }}" class="font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1">
+                    <span>←</span> Tous les trajets
+                </a>
+                <span class="text-slate-300">/</span>
+                <span>Maroc Interurbain</span>
+                <span class="text-slate-300">/</span>
+                <span>{{ trip.departureCity.region|default('Souss-Massa') }} & {{ trip.arrivalCity.region|default('Marrakech-Safi') }}</span>
+                <span class="text-slate-300">/</span>
+                <span class="font-bold text-slate-800">{{ trip.departureCity.name }} → {{ trip.arrivalCity.name }}</span>
+            </div>
+
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Trajet confirmé
+                </span>
+                {% if stops|length > 2 %}
+                    <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-semibold">
+                        <span>⏳</span> Escale {{ stops[1].city.name }}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 2. Trip Header Banner (Dark Forest Green matching Stitch S02) -->
+        <div class="relative bg-gradient-to-r from-[#052b24] via-[#04241e] to-[#062c25] rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-emerald-900/40 overflow-hidden">
+            <!-- Subtle background aesthetic elements -->
+            <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <!-- Left Title & Metadata -->
+                <div class="space-y-3">
+                    <div class="flex flex-wrap items-center gap-3 text-xs">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 font-bold uppercase tracking-wider text-[11px]">
+                            LIGNE EXPRESS A3
+                        </span>
+                        <span class="text-emerald-200/70 font-mono">
+                            Réf. : SC-{{ trip.id * 73 }}
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-800/60 text-[11px]">
+                            <span>🌱</span> Empreinte carbone réduite (-68%)
+                        </span>
+                    </div>
+
+                    <div class="flex flex-wrap items-baseline gap-3">
+                        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
+                            {{ trip.departureCity.name }} <span class="text-emerald-400 font-normal">→</span> {{ trip.arrivalCity.name }}
+                        </h1>
+                        <div class="text-sm font-semibold text-emerald-300 bg-emerald-950/70 px-3 py-1 rounded-lg border border-emerald-500/30">
+                            À PARTIR DE <span class="text-white font-extrabold text-base">{{ segments[0].price|default(55) }} DH</span> / tronçon
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-4 text-xs text-emerald-100/90 pt-1">
+                        <span class="flex items-center gap-1.5">
+                            <span>📅</span> {{ trip.departureAt ? trip.departureAt|date('l d F Y') : 'Samedi 14 Novembre 2026' }}
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span>🕒</span> Départ à {{ trip.departureAt ? trip.departureAt|date('H:i') : '08:00' }}
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span>⏱</span> {{ trip.distanceKm|default(230)|round }} km via Autoroute
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Right Trust Assurances -->
+                <div class="flex flex-col sm:flex-row lg:flex-col gap-2.5 flex-shrink-0 text-xs">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-900/50 border border-emerald-500/30 text-emerald-200">
+                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        <span>Réservation instantanée sans attente</span>
+                    </div>
+                    <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-900/50 border border-emerald-500/30 text-emerald-200">
+                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        <span>Conducteur certifié SafarCar Pro</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Two-Column Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left Column: Map, Segments Timeline, Driver & Vehicle -->
+            <div class="lg:col-span-7 space-y-6">
+                
+                <!-- Card 1: Interactive Leaflet Map -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-brand-600 flex items-center justify-center font-bold">
+                                🗺
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-bold text-slate-900">Itinéraire cartographique officiel</h2>
+                                <p class="text-xs text-slate-500">Autoroute A3 ({{ trip.departureCity.name }} - {{ trip.arrivalCity.name }}) • Tracé haute précision</p>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Trafic fluide
+                        </span>
+                    </div>
+
+                    <!-- Leaflet Container -->
+                    <div class="relative">
+                        <div id="trip-map" class="h-64 sm:h-72 w-full rounded-xl border border-slate-200 z-0"></div>
+                        
+                        <!-- Map Bottom Pill Overlay -->
+                        <div class="absolute bottom-3 left-3 z-[1000] bg-slate-900/80 backdrop-blur-md text-white text-[11px] px-3 py-1.5 rounded-lg border border-white/20 shadow-lg flex items-center gap-2">
+                            <span>🛣 {{ trip.distanceKm|default(230)|round }} km via A3</span>
+                            <span class="text-emerald-400">• Péage inclus</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Step-by-Step Segments & Availability Timeline -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                        <div>
+                            <h2 class="text-base font-extrabold text-slate-900">Détail des étapes & Disponibilité par tronçon</h2>
+                            <p class="text-xs text-slate-500 mt-0.5">Sélection flexible : réservez l'intégralité ou une portion du trajet selon vos besoins.</p>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
+                            Système multi-segments actif
+                        </span>
+                    </div>
+
+                    <!-- Timeline Loop -->
+                    <div class="space-y-4">
+                        {% for i, stop in stops %}
+                            <!-- Stop Node -->
+                            <div class="flex items-start gap-4">
+                                <div class="flex flex-col items-center flex-shrink-0">
+                                    {% if loop.first %}
+                                        <div class="w-7 h-7 rounded-full bg-emerald-700 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">
+                                            1
+                                        </div>
+                                    {% elseif loop.last %}
+                                        <div class="w-7 h-7 rounded-full bg-emerald-700 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">
+                                            {{ stops|length }}
+                                        </div>
+                                    {% else %}
+                                        <div class="w-7 h-7 rounded-full bg-amber-500 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">
+                                            {{ loop.index }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="flex-1 -mt-0.5">
+                                    <div class="flex items-baseline justify-between gap-2">
+                                        <div class="flex items-baseline gap-2">
+                                            <span class="text-base font-extrabold text-slate-900">
+                                                {{ stop.estimatedArrivalAt ? stop.estimatedArrivalAt|date('H:i') : trip.departureAt|date('H:i') }}
+                                            </span>
+                                            <span class="text-sm font-bold text-slate-800">{{ stop.city.name }}</span>
+                                        </div>
+                                        <span class="text-[10px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider
+                                            {% if loop.first %}bg-emerald-50 text-emerald-700 border border-emerald-200
+                                            {% elseif loop.last %}bg-slate-100 text-slate-700 border border-slate-200
+                                            {% else %}bg-amber-50 text-amber-700 border border-amber-200{% endif %}">
+                                            {% if loop.first %}Départ initial{% elseif loop.last %}Arrivée finale{% else %}Escale rapide{% endif %}
+                                        </span>
+                                    </div>
+                                    <div class="text-xs text-slate-600 font-medium mt-0.5">
+                                        {{ stop.meetingPoint|default('Point de rendez-vous officiel') }}
+                                    </div>
+                                    <div class="text-[11px] text-brand-700 font-semibold mt-1 flex items-center gap-1">
+                                        <span>📍</span> Point de rendez-vous géolocalisé et confirmé par le conducteur
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Intermediate Segment Card (between current stop and next stop) -->
+                            {% if not loop.last %}
+                                {% set seg = segments[i]|default(null) %}
+                                <div class="ml-3.5 pl-7 border-l-2 border-dashed border-slate-200 py-2">
+                                    <div class="p-3.5 rounded-xl border {% if seg and seg.availableSeats == 1 %}bg-amber-50/60 border-amber-200{% else %}bg-emerald-50/40 border-emerald-200{% endif %} flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                        <div class="space-y-1">
+                                            <div class="text-xs font-bold text-slate-900 flex items-center gap-2">
+                                                <span class="text-brand-600">✦</span>
+                                                Tronçon {{ i + 1 }} : {{ stop.city.name }} → {{ stops[i + 1].city.name }}
+                                            </div>
+                                            <div class="text-[11px] text-slate-500">
+                                                {{ seg ? seg.distanceKm|default(100)|round : 100 }} km • Via A3 avec péage inclus
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center gap-3 flex-shrink-0">
+                                            {% if seg and seg.availableSeats == 1 %}
+                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold animate-pulse">
+                                                    <span>🔥</span> 1 seule place restante
+                                                </span>
+                                            {% elseif seg %}
+                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
+                                                    <span>✓</span> {{ seg.availableSeats }} places disponibles
+                                                </span>
+                                            {% endif %}
+                                            <div class="text-right">
+                                                <div class="text-sm font-extrabold text-slate-900">
+                                                    {{ seg ? seg.price : 55 }} DH
+                                                </div>
+                                                <div class="text-[9px] text-slate-400">par place</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Card 3: Driver Profile & Vehicle Specs -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
+                    <!-- Driver Header -->
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-5">
+                        <div class="flex items-center gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-800 font-extrabold text-lg flex items-center justify-center border-2 border-emerald-300 flex-shrink-0">
+                                {{ driver.firstName|slice(0, 1) }}{{ driver.lastName|slice(0, 1) }}
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-base font-extrabold text-slate-900">{{ driver.firstName }} {{ driver.lastName }}</h3>
+                                    {% if isSuperDriver %}
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            SUPER CONDUCTEUR
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center gap-3 text-xs text-slate-500 mt-1">
+                                    <span class="text-amber-500 font-bold">★ {{ driverStats.average ? driverStats.average|number_format(1) : '4.9' }} / 5</span>
+                                    <span>({{ driverStats.count ? driverStats.count : '12' }} avis vérifiés)</span>
+                                    <span class="text-slate-300">•</span>
+                                    <span class="text-brand-600 font-semibold">⚡ Répond en ~15 min</span>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-2 mt-2 text-[11px] text-slate-600">
+                                    <span class="inline-flex items-center gap-1 text-emerald-700"><span>✓</span> CNI marocaine validée</span>
+                                    <span class="text-slate-300">•</span>
+                                    <span class="inline-flex items-center gap-1 text-emerald-700"><span>✓</span> Permis > 5 ans</span>
+                                    <span class="text-slate-300">•</span>
+                                    <span class="inline-flex items-center gap-1 text-emerald-700"><span>✓</span> Assurance à jour</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="{{ path('app_home') }}" class="text-xs font-bold text-slate-700 hover:text-brand-600 border border-slate-200 rounded-xl px-3 py-2 text-center transition">
+                            Voir son profil →
+                        </a>
+                    </div>
+
+                    <!-- Driver Bio Quote -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/80 text-xs text-slate-700 leading-relaxed italic">
+                        « {{ driver.bio|default('Ingénieur réseau basé à Agadir, je fais la navette vers Marrakech tous les week-ends pour voir ma famille. Conduite souple et ponctuelle, musique calme et discussion sympa bienvenue ! Arrêt ponctuel à Chichaoua assuré.') }} »
+                    </div>
+
+                    <!-- Vehicle & Comfort Conditions (5-card grid) -->
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Véhicule & Conditions de confort à bord</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <!-- 1. Car -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                                <span class="text-base flex-shrink-0">🚗</span>
+                                <div>
+                                    <div class="font-bold text-slate-800">
+                                        {% if trip.vehicle %}{{ trip.vehicle.brand }} {{ trip.vehicle.model }}{% else %}Renault Mégane IV{% endif %}
+                                    </div>
+                                    <div class="text-[11px] text-slate-500">Berline blanche climatisée • Série Maroc</div>
+                                </div>
+                            </div>
+
+                            <!-- 2. AC -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                                <span class="text-base flex-shrink-0">❄️</span>
+                                <div>
+                                    <div class="font-bold text-slate-800">Climatisation régulée</div>
+                                    <div class="text-[11px] text-slate-500">Fraîcheur garantie durant tout le voyage</div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Luggage -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                                <span class="text-base flex-shrink-0">🧳</span>
+                                <div>
+                                    <div class="font-bold text-slate-800">Bagages acceptés</div>
+                                    <div class="text-[11px] text-slate-500">1 valise cabine (max 10kg) + sac à dos</div>
+                                </div>
+                            </div>
+
+                            <!-- 4. Max 2 back -->
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
+                                <span class="text-base flex-shrink-0">👥</span>
+                                <div>
+                                    <div class="font-bold text-slate-800">Max. 2 passagers à l'arrière</div>
+                                    <div class="text-[11px] text-slate-500">Espace généreux garanti pour vos jambes</div>
+                                </div>
+                            </div>
+
+                            <!-- 5. Non-smoking (Full width) -->
+                            <div class="sm:col-span-2 p-3 bg-rose-50/50 rounded-xl border border-rose-200 flex items-start gap-3">
+                                <span class="text-base flex-shrink-0">🚭</span>
+                                <div>
+                                    <div class="font-bold text-rose-900">Habitacle strictement non-fumeur</div>
+                                    <div class="text-[11px] text-rose-700">Cigarettes électroniques et tabac non autorisés à bord</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Sticky Interactive Booking Module -->
+            <div class="lg:col-span-5 space-y-5 sticky top-24">
+                
+                <!-- Booking Configuration Card -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-xl p-6 space-y-6">
+                    <!-- Card Top Header -->
+                    <div class="flex items-start justify-between border-b border-slate-100 pb-4">
+                        <div>
+                            <span class="inline-flex items-center text-[10px] font-extrabold uppercase tracking-wider text-brand-700 bg-emerald-50 px-2 py-0.5 rounded">
+                                Module de Réservation
+                            </span>
+                            <h3 class="text-base font-extrabold text-slate-900 mt-1">Configurer votre trajet</h3>
+                            <p class="text-[11px] text-slate-500">Tarif transparent garanti, sans mauvaises surprises.</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase block">Prix par siège</span>
+                            <span id="booking-price-header" class="text-2xl font-extrabold text-slate-900 tracking-tight">
+                                {{ activeSubTrip.price }} DH
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Origin & Destination Selector Form -->
+                    <form id="booking-interactive-form" action="{{ path('app_home') }}#checkout" method="GET" class="space-y-4">
+                        <!-- Origin Stop Selector -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <label class="font-bold text-slate-700">Point de départ :</label>
+                                <span class="text-slate-400 font-medium">Origine</span>
+                            </div>
+                            <select id="select-from-stop" name="from" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer">
+                                {% for s in stops|slice(0, stops|length - 1) %}
+                                    <option value="{{ s.id }}" {% if selectedFromStop and selectedFromStop.id == s.id %}selected{% endif %}>
+                                        {{ s.city.name }} ({{ s.estimatedArrivalAt ? s.estimatedArrivalAt|date('H:i') : trip.departureAt|date('H:i') }} • {{ s.meetingPoint|slice(0, 20) }}...)
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Destination Stop Selector -->
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <label class="font-bold text-slate-700">Point de dépose :</label>
+                                <span class="text-slate-400 font-medium">Destination</span>
+                            </div>
+                            <select id="select-to-stop" name="to" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer">
+                                {% for s in stops|slice(1) %}
+                                    <option value="{{ s.id }}" {% if selectedToStop and selectedToStop.id == s.id %}selected{% endif %}>
+                                        {{ s.city.name }} ({{ s.estimatedArrivalAt ? s.estimatedArrivalAt|date('H:i') : '12:30' }} • {{ s.meetingPoint|slice(0, 20) }}...)
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Route Summary Pill -->
+                        <div class="p-2.5 bg-emerald-50/70 rounded-xl border border-emerald-200/70 flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-2 text-brand-900 font-bold">
+                                <span>🛣</span>
+                                <span id="booking-route-label">Trajet complet : {{ selectedFromStop.city.name }} → {{ selectedToStop.city.name }}</span>
+                            </div>
+                            <span id="booking-distance-badge" class="text-emerald-700 font-medium text-[11px]">
+                                {{ activeSubTrip.distanceKm }} km
+                            </span>
+                        </div>
+
+                        <!-- Seats Selector -->
+                        <div>
+                            <div class="flex items-center justify-between text-xs mb-1.5">
+                                <label class="font-bold text-slate-700">Nombre de places :</label>
+                                <span id="booking-max-badge" class="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-[10px]">
+                                    Max: {{ activeSubTrip.availableSeats }} place{% if activeSubTrip.availableSeats > 1 %}s{% endif %}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between bg-slate-50 rounded-xl border border-slate-200 p-2">
+                                <span class="text-xs font-semibold text-slate-600 flex items-center gap-1.5 ml-2">
+                                    <span>👤</span> Passagers réservés
+                                </span>
+                                <div class="flex items-center gap-3">
+                                    <button type="button" id="btn-seats-minus" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-100 flex items-center justify-center transition disabled:opacity-40" disabled>-</button>
+                                    <span id="display-seats-count" class="text-sm font-extrabold text-slate-900 w-4 text-center">1</span>
+                                    <input type="hidden" id="input-seats-count" name="seats" value="1">
+                                    <button type="button" id="btn-seats-plus" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-100 flex items-center justify-center transition disabled:opacity-40" {% if activeSubTrip.availableSeats <= 1 %}disabled{% endif %}>+</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Capacity Warning Banner (Dynamic) -->
+                        <div id="bottleneck-warning" class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800 flex items-start gap-2 {% if activeSubTrip.availableSeats > 1 %}hidden{% endif %}">
+                            <span class="text-amber-600 font-bold">ⓘ</span>
+                            <span>Limité à 1 place sur ce trajet complet (contrainte du tronçon le plus demandé).</span>
+                        </div>
+
+                        <!-- Pricing Breakdown -->
+                        <div class="border-t border-slate-100 pt-4 space-y-2 text-xs">
+                            <div class="flex justify-between text-slate-600">
+                                <span><span id="breakdown-seats-text">1 place</span> × <span id="breakdown-route-text">{{ selectedFromStop.city.name }} → {{ selectedToStop.city.name }}</span></span>
+                                <span id="breakdown-subtotal" class="font-bold text-slate-900">{{ activeSubTrip.price }} DH</span>
+                            </div>
+                            <div class="flex justify-between text-slate-600">
+                                <span>Frais de service & assurance AXA</span>
+                                <span class="font-semibold text-emerald-600">Offert (0 DH)</span>
+                            </div>
+                            <div class="flex justify-between text-slate-600">
+                                <span>Péages autoroutiers ADM</span>
+                                <span class="font-semibold text-emerald-600">Inclus</span>
+                            </div>
+
+                            <div class="border-t border-slate-200 pt-3 flex justify-between items-baseline">
+                                <span class="text-sm font-extrabold text-slate-900">Total à payer</span>
+                                <div class="text-right">
+                                    <span id="breakdown-total" class="text-2xl font-extrabold text-slate-900 tracking-tight">
+                                        {{ activeSubTrip.price }} DH
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="text-[10px] text-slate-400 text-right">
+                                Paiement sécurisé ou espèces au départ
+                            </div>
+                        </div>
+
+                        <!-- CTA Button -->
+                        <button type="submit" id="btn-submit-booking" class="w-full py-3.5 px-4 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-900/20 hover:shadow-brand-900/30 transition flex items-center justify-center gap-2 group">
+                            <span>⚡ Réserver instantanément • <span id="btn-cta-price">{{ activeSubTrip.price }} DH</span></span>
+                            <span class="group-hover:translate-x-1 transition duration-150">→</span>
+                        </button>
+
+                        <!-- Guarantee notes -->
+                        <div class="text-[11px] text-slate-500 leading-relaxed text-center pt-2">
+                            <span>🔒</span> Paiement sécurisé CMI / Cartes marocaines & internationales. Annulation 100% sans frais jusqu'à 24h avant le départ, bien après confirmation du trajet.
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Driver Message Box Card -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center justify-between gap-3 text-xs">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 text-brand-600 flex items-center justify-center text-lg flex-shrink-0">
+                            💬
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900">Une question pour {{ driver.firstName }} ?</div>
+                            <div class="text-[11px] text-slate-500">Posez vos questions sur le lieu de départ ou vos valises.</div>
+                        </div>
+                    </div>
+                    <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex-shrink-0 flex items-center gap-1 transition">
+                        <span>Écrire</span>
+                        <span class="text-[10px]">▷</span>
+                    </button>
+                </div>
+
+                <!-- Quality Commitment Card -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3 text-xs">
+                    <div class="flex items-center gap-2 font-bold text-slate-900 text-sm">
+                        <span class="text-brand-600">🛡</span>
+                        <span>Engagement Qualité SafarCar Maroc</span>
+                    </div>
+                    <div class="space-y-2 text-slate-600 text-[11px] leading-relaxed">
+                        <div class="flex items-start gap-2">
+                            <span class="text-emerald-500 font-bold mt-0.5">✓</span>
+                            <span>Conducteurs identifiés avec Carte Nationale marocaine physique et vérification de permis.</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-emerald-500 font-bold mt-0.5">✓</span>
+                            <span>Assurance complémentaire passager incluse sur tous les trajets autoroutiers nationaux.</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="text-emerald-500 font-bold mt-0.5">✓</span>
+                            <span>Support client dédié basé à Casablanca, disponible 7j/7 par téléphone et WhatsApp.</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Interactive Client-side Script (Matrix sub-trip reactivity + Leaflet Map) -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Parse Data from Controller
+        const matrix = {{ matrixJson|raw }};
+        const waypoints = {{ mapWaypointsJson|raw }};
+
+        // DOM elements
+        const fromSelect = document.getElementById('select-from-stop');
+        const toSelect = document.getElementById('select-to-stop');
+        const priceHeader = document.getElementById('booking-price-header');
+        const routeLabel = document.getElementById('booking-route-label');
+        const distBadge = document.getElementById('booking-distance-badge');
+        const maxBadge = document.getElementById('booking-max-badge');
+        const bottleneckWarning = document.getElementById('bottleneck-warning');
+        const seatsDisplay = document.getElementById('display-seats-count');
+        const seatsInput = document.getElementById('input-seats-count');
+        const seatsMinusBtn = document.getElementById('btn-seats-minus');
+        const seatsPlusBtn = document.getElementById('btn-seats-plus');
+        const breakdownSeats = document.getElementById('breakdown-seats-text');
+        const breakdownRoute = document.getElementById('breakdown-route-text');
+        const breakdownSubtotal = document.getElementById('breakdown-subtotal');
+        const breakdownTotal = document.getElementById('breakdown-total');
+        const btnCtaPrice = document.getElementById('btn-cta-price');
+
+        let currentSeats = 1;
+        let currentMaxSeats = 1;
+        let unitPrice = {{ activeSubTrip.price }};
+
+        function updateBookingState() {
+            const fromId = fromSelect.value;
+            const toId = toSelect.value;
+            const key = fromId + '_' + toId;
+            const data = matrix[key];
+
+            if (!data) return;
+
+            unitPrice = data.price;
+            currentMaxSeats = Math.max(1, data.availableSeats);
+
+            // Clamp seats
+            if (currentSeats > currentMaxSeats) {
+                currentSeats = currentMaxSeats;
+            }
+            if (currentSeats < 1) {
+                currentSeats = 1;
+            }
+
+            seatsInput.value = currentSeats;
+            seatsDisplay.textContent = currentSeats;
+            seatsMinusBtn.disabled = (currentSeats <= 1);
+            seatsPlusBtn.disabled = (currentSeats >= currentMaxSeats);
+
+            const total = unitPrice * currentSeats;
+
+            priceHeader.textContent = unitPrice + ' DH';
+            routeLabel.textContent = (data.fromId === waypoints[0]?.id && data.toId === waypoints[waypoints.length - 1]?.id ? 'Trajet complet : ' : 'Tronçon : ') + data.fromCity + ' → ' + data.toCity;
+            distBadge.textContent = data.distanceKm + ' km';
+            maxBadge.textContent = 'Max: ' + currentMaxSeats + ' place' + (currentMaxSeats > 1 ? 's' : '');
+
+            // Warning
+            if (currentMaxSeats === 1) {
+                bottleneckWarning.classList.remove('hidden');
+            } else {
+                bottleneckWarning.classList.add('hidden');
+            }
+
+            // Breakdown
+            breakdownSeats.textContent = currentSeats + ' place' + (currentSeats > 1 ? 's' : '');
+            breakdownRoute.textContent = data.fromCity + ' → ' + data.toCity;
+            breakdownSubtotal.textContent = total + ' DH';
+            breakdownTotal.textContent = total + ' DH';
+            btnCtaPrice.textContent = total + ' DH';
+        }
+
+        if (fromSelect && toSelect) {
+            fromSelect.addEventListener('change', updateBookingState);
+            toSelect.addEventListener('change', updateBookingState);
+        }
+
+        if (seatsMinusBtn && seatsPlusBtn) {
+            seatsMinusBtn.addEventListener('click', function() {
+                if (currentSeats > 1) {
+                    currentSeats--;
+                    updateBookingState();
+                }
+            });
+
+            seatsPlusBtn.addEventListener('click', function() {
+                if (currentSeats < currentMaxSeats) {
+                    currentSeats++;
+                    updateBookingState();
+                }
+            });
+        }
+
+        // 2. Leaflet Map Initialization
+        if (typeof L !== 'undefined' && document.getElementById('trip-map') && waypoints.length > 0) {
+            const map = L.map('trip-map', {
+                scrollWheelZoom: false,
+            });
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            const latLngs = [];
+
+            waypoints.forEach((wp, index) => {
+                const point = [wp.lat, wp.lng];
+                latLngs.push(point);
+
+                // Custom marker icon
+                const markerColor = wp.isInitial || wp.isFinal ? '#047857' : '#d97706';
+                const customIcon = L.divIcon({
+                    className: 'custom-map-marker',
+                    html: `<div style="background-color: ${markerColor}; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">${index + 1}</div>`,
+                    iconSize: [26, 26],
+                    iconAnchor: [13, 13]
+                });
+
+                const marker = L.marker(point, { icon: customIcon }).addTo(map);
+                marker.bindPopup(`
+                    <div style="padding: 4px;">
+                        <div style="font-weight: 800; font-size: 13px; color: #0f172a;">${wp.city} • ${wp.time}</div>
+                        <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${wp.meetingPoint}</div>
+                    </div>
+                `);
+            });
+
+            // Draw road polyline in brand emerald
+            const polyline = L.polyline(latLngs, {
+                color: '#0d9488',
+                weight: 4,
+                opacity: 0.9,
+                dashArray: '1, 6'
+            }).addTo(map);
+
+            map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
+        }
+    });
+</script>
+{% endblock %}
