@@ -42,9 +42,11 @@ traces-ia/
 - **Moroccan Demo Data Generation:** Accelerated the creation of realistic `AppFixtures` with accurate GPS coordinates for 15 Moroccan cities, realistic driver profiles, and multi-stop journeys.
 
 ### B. Where AI Made Mistakes or Hallucinated (Errors Identified)
+- **Git Tracking of `.env`:** Standard Symfony recipes default to committing `.env` as a baseline template, which risked exposing local credentials. We caught that `.env` should be strictly untracked and replaced by `.env.example`.
 - **Naive Concurrency in Booking:** During initial checks, standard AI prompts suggested basic PHP `if ($availableSeats >= $requested)` checks. This creates severe race conditions under simultaneous requests.
 - **Deprecated Framework Practices:** Suggested older Symfony 6 bundle patterns and annotations instead of modern Symfony 7.4 PHP 8.3 Attributes and native AssetMapper.
 
 ### C. How Errors Were Detected and Corrected (Engineering Rigor)
+- **Strict `.gitignore` & Git Index Scrubbing:** Configured `.gitignore` with strict ignore rules (`/.env`, `/.env.local*`), retained only `!/.env.example` and `!/.env.test`, and removed `.env` from the repository index via `git rm --cached .env` without deleting the local file.
 - **Enforcing ACID Transactions & Pessimistic Locks:** Replaced application-level checks with `$entityManager->wrapInTransaction()` and applied `LockMode::PESSIMISTIC_WRITE` (`SELECT ... FOR UPDATE`) directly on `TripSegment` entities.
 - **Automated Concurrency Test Verification:** Designed integration tests with PHPUnit simulating rapid concurrent booking attempts to verify that overbooking is structurally impossible at the database level.
