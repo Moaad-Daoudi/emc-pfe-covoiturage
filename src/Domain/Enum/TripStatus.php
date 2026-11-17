@@ -1,5 +1,5 @@
 <?php
-namespace App\Enum;
+namespace App\Domain\Enum;
 
 enum TripStatus: string
 {

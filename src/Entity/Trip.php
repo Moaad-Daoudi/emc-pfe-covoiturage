@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use App\Enum\TripStatus;
+use App\Domain\Enum\TripStatus;
 
 #[ORM\Entity(repositoryClass: TripRepository::class)]
 class Trip
@@ -186,12 +186,12 @@ class Trip
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?TripStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(TripStatus $status): static
     {
         $this->status = $status;
 

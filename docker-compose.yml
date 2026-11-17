@@ -54,6 +54,23 @@ services:
       timeout: 5s
       retries: 10
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: covoit_phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: database
+      PMA_USER: root
+      PMA_PASSWORD: rootsecret
+      UPLOAD_LIMIT: 64M
+    networks:
+      - covoit_network
+    depends_on:
+      database:
+        condition: service_healthy
+
 networks:
   covoit_network:
     driver: bridge

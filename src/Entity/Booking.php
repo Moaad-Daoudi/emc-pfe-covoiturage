@@ -6,7 +6,7 @@ use App\Repository\BookingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use App\Enum\BookingStatus;
+use App\Domain\Enum\BookingStatus;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 class Booking
@@ -150,12 +150,12 @@ class Booking
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?BookingStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(BookingStatus $status): static
     {
         $this->status = $status;
 
