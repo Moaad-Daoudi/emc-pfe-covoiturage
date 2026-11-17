@@ -248,10 +248,10 @@ flowchart LR
 
 | Day | Primary Sprint | Key Deliverable | Status |
 |:---|:---|:---|:---:|
-| **Day 1** | Sprint 0 & 1 | Operational Docker + Symfony 7.4 Skeleton + Domain Entities | ⏳ In Progress |
-| **Day 2** | Sprint 1 | Moroccan Seed Data + Functional EasyAdmin Back-Office | ⏳ Pending |
-| **Day 3** | Sprint 2 | `PESSIMISTIC_WRITE` Concurrency + Passing PHPUnit Tests | ⏳ Pending |
-| **Day 4** | Sprint 3 | Passenger Flow (Search, Details, Checkout, Bookings) | ⏳ Pending |
-| **Day 5** | Sprint 3 | Driver Flow + Public Profiles + Verified Reviews | ⏳ Pending |
-| **Day 6** | Sprint 4 | OSRM & Nominatim Integration + Leaflet Route Map | ⏳ Pending |
-| **Day 7** | Sprint 5 | `INSTALL.md`, 1-Page PDF Note, AI Traces & Final Submission | ⏳ Pending |
+| **Day 1** | Sprint 0 & 1 | Operational Docker + Symfony 7.4 Skeleton + Domain Entities | ✅ Completed |
+| **Day 2** | Sprint 1 | Moroccan Seed Data + Functional EasyAdmin Back-Office | ✅ Completed |
+| **Day 3** | Sprint 2 | `PESSIMISTIC_WRITE` Concurrency + Passing PHPUnit Tests | ✅ Completed |
+| **Day 4** | Sprint 3 | Passenger Flow (Search, Details, Checkout, Bookings) | ✅ Completed |
+| **Day 5** | Sprint 3 | Driver Flow + Public Profiles + Verified Reviews | ✅ Completed |
+| **Day 6** | Sprint 4 | OSRM & Nominatim Integration + Leaflet Route Map + Lucide Icons + 100% Dynamic DB Data | ✅ Completed |
+| **Day 7** | Sprint 5 | `INSTALL.md`, 1-Page PDF Note, AI Traces & Final Submission | ⏳ Ready for Sprint 5 |

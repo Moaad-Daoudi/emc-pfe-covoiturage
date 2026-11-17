@@ -178,10 +178,18 @@ class BookingController extends AbstractController
             }
         }
 
-        // Stats KPIs
+        // Stats KPIs computed dynamically from database
         $upcomingCount = count($upcomingBookings);
-        $totalSavings = max(120, $upcomingCount * 120);
-        $co2Avoided = max(18, $upcomingCount * 17);
+        $totalSavings = 0;
+        $totalKm = 0;
+        foreach ($allBookings as $b) {
+            if ($b->getStatus() === BookingStatus::CONFIRMED) {
+                $tripPrice = $b->getTotalPrice() ?? 0;
+                $totalSavings += (int) round($tripPrice * 0.45);
+                $totalKm += (float) ($b->getTrip()?->getDistanceKm() ?? 200.0);
+            }
+        }
+        $co2Avoided = (int) round($totalKm * 0.12);
 
         return $this->render('app/booking/dashboard.html.twig', [
             'passenger' => $passenger,

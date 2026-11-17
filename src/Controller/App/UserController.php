@@ -35,11 +35,18 @@ class UserController extends AbstractController
         $reviews = $reviewRepository->findBy(['target' => $user], ['createdAt' => 'DESC']);
         $vehicles = $vehicleRepository->findBy(['owner' => $user]);
 
+        $driverTripsCount = count($user->getTrips());
+        $passengerBookingsCount = count($user->getBookings());
+        $totalTrips = $driverTripsCount + $passengerBookingsCount;
+
         return $this->render('app/user/show.html.twig', [
             'user' => $user,
             'stats' => $stats,
             'reviews' => $reviews,
             'vehicles' => $vehicles,
+            'driverTripsCount' => $driverTripsCount,
+            'passengerBookingsCount' => $passengerBookingsCount,
+            'totalTrips' => $totalTrips,
         ]);
     }
 }

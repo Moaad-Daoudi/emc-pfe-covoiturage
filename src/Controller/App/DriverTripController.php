@@ -242,7 +242,8 @@ class DriverTripController extends AbstractController
         TripRepository $tripRepository,
         UserRepository $userRepository,
         VehicleRepository $vehicleRepository,
-        BookingRepository $bookingRepository
+        BookingRepository $bookingRepository,
+        \App\Repository\ReviewRepository $reviewRepository
     ): Response {
         /** @var User|null $driver */
         $driver = $this->getUser();
@@ -346,12 +347,24 @@ class DriverTripController extends AbstractController
             }
         }
 
-        // Global KPI metrics
+        // Global KPI metrics computed 100% dynamically from database
+        $totalRev = 0;
+        $totalOccPct = 0;
+        $allTripCount = count($allTrips);
+        foreach (array_merge($activeTrips, $pastTrips) as $t) {
+            $totalRev += $t['revenue'];
+            $totalOccPct += $t['occupancyPct'];
+        }
+        $avgOcc = $allTripCount > 0 ? (int) round($totalOccPct / $allTripCount) : 0;
+
+        $ratingStats = $driver !== null ? $reviewRepository->getRatingStatsForUser($driver) : ['average' => null, 'count' => 0];
+        $avgRating = $ratingStats['average'] !== null ? round((float) $ratingStats['average'], 2) : 5.0;
+
         $kpi = [
             'activeCount' => count($activeTrips),
-            'monthRevenue' => 2450,
-            'rating' => 4.95,
-            'avgOccupancy' => 92,
+            'monthRevenue' => $totalRev > 0 ? $totalRev : 0,
+            'rating' => $avgRating,
+            'avgOccupancy' => $avgOcc > 0 ? $avgOcc : 0,
         ];
 
         return $this->render('app/driver/index.html.twig', [

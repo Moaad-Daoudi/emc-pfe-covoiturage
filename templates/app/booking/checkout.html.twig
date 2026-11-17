@@ -8,11 +8,12 @@
 
         <!-- Top Navigation & Security Header -->
         <div class="flex items-center justify-between text-xs">
-            <a href="{{ path('app_trip_show', {id: trip.id, from: boardingStop.id, to: alightingStop.id}) }}" class="font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1 transition">
-                <span>←</span> Retour aux détails du trajet
+            <a href="{{ path('app_trip_show', {id: trip.id, from: boardingStop.id, to: alightingStop.id}) }}" class="font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1.5 transition">
+                {{ ux_icon('lucide:arrow-right', {class: 'w-3.5 h-3.5 rotate-180'}) }}
+                <span>Retour aux détails du trajet</span>
             </a>
             <div class="inline-flex items-center gap-1.5 text-slate-500 font-medium">
-                <span class="text-emerald-600">🛡</span>
+                {{ ux_icon('lucide:shield-check', {class: 'w-4 h-4 text-emerald-600'}) }}
                 <span>Plateforme sécurisée CMI & ANRT</span>
             </div>
         </div>
@@ -22,13 +23,17 @@
             <div class="grid grid-cols-3 gap-2 text-center text-xs">
                 <!-- Step 1 -->
                 <div class="flex items-center justify-center gap-2 text-emerald-700 font-bold">
-                    <span class="w-6 h-6 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-xs">✓</span>
+                    <span class="w-6 h-6 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-xs">
+                        {{ ux_icon('lucide:check', {class: 'w-3.5 h-3.5 text-emerald-700'}) }}
+                    </span>
                     <span class="hidden sm:inline">ÉTAPE 1</span>
                     <span class="text-slate-600 font-medium hidden md:inline">Sélection trajet</span>
                 </div>
                 <!-- Step 2 -->
                 <div class="flex items-center justify-center gap-2 text-emerald-700 font-bold border-x border-slate-100">
-                    <span class="w-6 h-6 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-xs">✓</span>
+                    <span class="w-6 h-6 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center text-xs">
+                        {{ ux_icon('lucide:check', {class: 'w-3.5 h-3.5 text-emerald-700'}) }}
+                    </span>
                     <span class="hidden sm:inline">ÉTAPE 2</span>
                     <span class="text-slate-600 font-medium hidden md:inline">Coordonnées</span>
                 </div>
@@ -72,12 +77,12 @@
                     <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                         <div class="flex items-center gap-2.5">
                             <div class="w-8 h-8 rounded-lg bg-emerald-50 text-brand-600 flex items-center justify-center">
-                                👤
+                                {{ ux_icon('lucide:user', {class: 'w-4 h-4'}) }}
                             </div>
                             <h2 class="text-sm font-bold text-slate-900">Passager & Contact vérifié</h2>
                         </div>
                         <span class="inline-flex items-center gap-1 text-[10px] font-extrabold bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                            <span>✓</span> VÉRIFIÉ
+                            {{ ux_icon('lucide:check', {class: 'w-3 h-3 text-emerald-600'}) }} VÉRIFIÉ
                         </span>
                     </div>
 
@@ -98,7 +103,7 @@
 
                     <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1">
                         <span class="flex items-center gap-1.5">
-                            <span>📱</span> Confirmation envoyée par WhatsApp dès validation
+                            {{ ux_icon('lucide:phone', {class: 'w-3.5 h-3.5 text-emerald-600'}) }} Confirmation envoyée par WhatsApp dès validation
                         </span>
                         <a href="{{ path('app_passenger_bookings') }}" class="text-brand-600 font-bold hover:underline">Modifier</a>
                     </div>
@@ -115,12 +120,12 @@
                         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-8 h-8 rounded-lg bg-emerald-50 text-brand-600 flex items-center justify-center">
-                                    💳
+                                    {{ ux_icon('lucide:credit-card', {class: 'w-4 h-4'}) }}
                                 </div>
                                 <h2 class="text-sm font-bold text-slate-900">Modes de règlement au Maroc</h2>
                             </div>
                             <span class="inline-flex items-center gap-1 text-[10px] font-extrabold bg-slate-100 text-slate-600 px-2 py-0.5 rounded border border-slate-200">
-                                <span>🛡</span> PROTÉGÉ CMI
+                                {{ ux_icon('lucide:shield-check', {class: 'w-3 h-3 text-slate-500'}) }} PROTÉGÉ CMI
                             </span>
                         </div>
 
@@ -140,9 +145,9 @@
                                                 Validation immédiate du siège dans le système. Billet numérique et reçu instantanément émis sans saisie de coordonnées bancaires.
                                             </p>
                                             <div class="flex items-center gap-3 mt-2 text-[10px] text-slate-500 font-semibold">
-                                                <span>✓ 0 DH de frais de dossier</span>
+                                                <span class="flex items-center gap-1">{{ ux_icon('lucide:check', {class: 'w-3 h-3 text-emerald-600'}) }} 0 DH de frais de dossier</span>
                                                 <span>•</span>
-                                                <span>⚡ Billet instantané</span>
+                                                <span class="flex items-center gap-1">{{ ux_icon('lucide:sparkles', {class: 'w-3 h-3 text-amber-500'}) }} Billet instantané</span>
                                             </div>
                                         </div>
                                     </div>
@@ -185,7 +190,7 @@
                         </div>
 
                         <div class="flex flex-wrap items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-100">
-                            <span>🔒 Chiffrement SSL 256-bit certifié CMI & ANRT</span>
+                            <span class="inline-flex items-center gap-1">{{ ux_icon('lucide:lock', {class: 'w-3 h-3 text-slate-400'}) }} Chiffrement SSL 256-bit certifié CMI & ANRT</span>
                             <span>SafarCar Trust & Safety Maroc</span>
                         </div>
                     </div>
@@ -193,7 +198,9 @@
                     <!-- Card 3: Conditions d'annulation flexibles (T-203 Rules) -->
                     <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
                         <div class="flex items-center gap-2">
-                            <span class="text-base text-brand-600">🛡</span>
+                            <div class="w-7 h-7 rounded-lg bg-emerald-50 text-brand-600 flex items-center justify-center">
+                                {{ ux_icon('lucide:shield', {class: 'w-4 h-4'}) }}
+                            </div>
                             <div>
                                 <h3 class="text-xs font-bold text-slate-900">Conditions d'annulation flexibles</h3>
                                 <div class="text-[10px] text-slate-400">Transparence totale pour les passagers SafarCar</div>
@@ -210,7 +217,7 @@
                         </div>
 
                         <div class="p-2.5 bg-slate-50 rounded-lg text-[11px] text-slate-600 flex items-center gap-1.5">
-                            <span>⚡</span>
+                            {{ ux_icon('lucide:sparkles', {class: 'w-3.5 h-3.5 text-amber-500 shrink-0'}) }}
                             <span>Remboursement instantané recrédité sans aucun délai administratif.</span>
                         </div>
                     </div>
@@ -218,17 +225,17 @@
                     <!-- 3 Trust Pill Badges -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
                         <div class="p-3 bg-white rounded-xl border border-slate-200 text-center">
-                            <span class="text-base block mb-1">🎟</span>
+                            {{ ux_icon('lucide:check-circle-2', {class: 'w-5 h-5 mx-auto text-emerald-600 mb-1'}) }}
                             <div class="font-bold text-slate-900">Garantie de place</div>
                             <div class="text-[10px] text-slate-400">Siège réservé et verrouillé</div>
                         </div>
                         <div class="p-3 bg-white rounded-xl border border-slate-200 text-center">
-                            <span class="text-base block mb-1">🎧</span>
+                            {{ ux_icon('lucide:phone', {class: 'w-5 h-5 mx-auto text-emerald-600 mb-1'}) }}
                             <div class="font-bold text-slate-900">Assistance 24/7</div>
                             <div class="text-[10px] text-slate-400">Support dédié au Maroc</div>
                         </div>
                         <div class="p-3 bg-white rounded-xl border border-slate-200 text-center">
-                            <span class="text-base block mb-1">💸</span>
+                            {{ ux_icon('lucide:wallet', {class: 'w-5 h-5 mx-auto text-emerald-600 mb-1'}) }}
                             <div class="font-bold text-slate-900">Remboursement direct</div>
                             <div class="text-[10px] text-slate-400">En cas d'imprévu</div>
                         </div>
@@ -237,8 +244,9 @@
                     <!-- Big Confirmation CTA Button -->
                     <div class="space-y-2">
                         <button type="submit" class="w-full py-4 px-6 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white font-extrabold text-sm rounded-xl shadow-xl shadow-brand-900/25 transition flex items-center justify-center gap-2 group">
-                            <span>✓ Confirmer et payer {{ totalPrice }} DH</span>
-                            <span class="group-hover:translate-x-1 transition duration-150">→</span>
+                            {{ ux_icon('lucide:check', {class: 'w-4 h-4 text-white'}) }}
+                            <span>Confirmer et payer {{ totalPrice }} DH</span>
+                            {{ ux_icon('lucide:arrow-right', {class: 'w-4 h-4 group-hover:translate-x-1 transition duration-150'}) }}
                         </button>
                         <div class="text-center">
                             <a href="{{ path('app_trip_show', {id: trip.id}) }}" class="text-xs text-slate-400 hover:text-slate-600 hover:underline">
@@ -257,7 +265,8 @@
                     <!-- Header -->
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div class="flex items-center gap-2 font-extrabold text-slate-900 text-sm">
-                            <span>📋</span> Récapitulatif du trajet
+                            {{ ux_icon('lucide:file-text', {class: 'w-4 h-4 text-brand-700'}) }}
+                            <span>Récapitulatif du trajet</span>
                         </div>
                         <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold text-[10px] uppercase">
                             DIRECT AUTOROUTE
@@ -274,8 +283,9 @@
                                 <span class="font-bold text-slate-900">{{ trip.driver.firstName }} {{ trip.driver.lastName|slice(0, 1) }}.</span>
                                 <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800">Conducteur Pro</span>
                             </div>
-                            <div class="text-slate-500 text-[11px] mt-0.5">
-                                ★ 4.9 • 18 avis vérifiés
+                            <div class="text-slate-500 text-[11px] mt-0.5 flex items-center gap-1">
+                                {{ ux_icon('lucide:star', {class: 'w-3 h-3 fill-amber-400 text-amber-400'}) }}
+                                <span>4.9 • 18 avis vérifiés</span>
                             </div>
                             {% if trip.vehicle %}
                                 <div class="text-[10px] text-slate-400">
@@ -287,8 +297,14 @@
 
                     <!-- Date & Duration -->
                     <div class="text-xs font-semibold text-slate-700 flex items-center justify-between">
-                        <span>📅 {{ trip.departureAt ? trip.departureAt|date('l d F Y') : 'Samedi 14 Novembre 2026' }}</span>
-                        <span class="text-slate-400">3h45 de route</span>
+                        <span class="flex items-center gap-1.5">
+                            {{ ux_icon('lucide:calendar', {class: 'w-3.5 h-3.5 text-slate-500'}) }}
+                            <span>{{ trip.departureAt ? trip.departureAt|date('l d F Y') : 'Samedi 14 Novembre 2026' }}</span>
+                        </span>
+                        <span class="text-slate-400 flex items-center gap-1">
+                            {{ ux_icon('lucide:clock', {class: 'w-3 h-3 text-slate-400'}) }}
+                            <span>3h45 de route</span>
+                        </span>
                     </div>
 
                     <!-- Timeline -->
@@ -345,7 +361,8 @@
 
                     <!-- Trust banner -->
                     <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-800 text-[11px] font-semibold flex items-center gap-2">
-                        <span>✓</span> Place réservée et garantie avec assistance voyage
+                        {{ ux_icon('lucide:check-circle-2', {class: 'w-4 h-4 text-emerald-700 shrink-0'}) }}
+                        <span>Place réservée et garantie avec assistance voyage</span>
                     </div>
                 </div>
             </div>

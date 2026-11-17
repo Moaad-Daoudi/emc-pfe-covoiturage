@@ -7,8 +7,8 @@
 
     <!-- Breadcrumb & Trust Badge -->
     <div class="flex items-center justify-between text-xs font-medium">
-        <a href="javascript:history.back()" class="text-slate-500 hover:text-emerald-700 transition flex items-center gap-1 font-semibold">
-            <span>←</span>
+        <a href="javascript:history.back()" class="text-slate-500 hover:text-emerald-700 transition flex items-center gap-1.5 font-semibold">
+            {{ ux_icon('lucide:arrow-left', {class: 'w-3.5 h-3.5'}) }}
             <span>Retour</span>
             <span class="text-slate-300 mx-1">/</span>
             <span class="text-slate-500">Membres SafarCar</span>
@@ -17,8 +17,8 @@
         </a>
 
         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">
-            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            Profil vérifié CNI & Permis
+            {{ ux_icon('lucide:shield-check', {class: 'w-3.5 h-3.5 text-emerald-600'}) }}
+            <span>Profil vérifié CNI & Permis</span>
         </span>
     </div>
 
@@ -31,7 +31,7 @@
                         {{ user.firstname|first|upper }}{{ user.lastname|first|upper }}
                     </div>
                     <span class="absolute bottom-1 right-1 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold border-2 border-white shadow-xs">
-                        ✓
+                        {{ ux_icon('lucide:check', {class: 'w-3 h-3 text-white'}) }}
                     </span>
                 </div>
 
@@ -40,21 +40,24 @@
                         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                             {{ user.firstname }} {{ user.lastname }}
                         </h1>
-                        <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/80">
-                            ✓ CNI & Permis B validés
+                        <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/80">
+                            {{ ux_icon('lucide:badge-check', {class: 'w-3.5 h-3.5 text-emerald-700'}) }}
+                            <span>CNI & Permis B validés</span>
                         </span>
                     </div>
 
                     <p class="text-xs sm:text-sm text-slate-500 flex flex-wrap items-center gap-3">
-                        <span>📍 Agadir, Maroc</span>
+                        <span class="flex items-center gap-1">{{ ux_icon('lucide:map-pin', {class: 'w-3.5 h-3.5 text-slate-400'}) }} Agadir, Maroc</span>
                         <span>•</span>
-                        <span>📅 Membre depuis mars 2024</span>
+                        <span class="flex items-center gap-1">{{ ux_icon('lucide:calendar', {class: 'w-3.5 h-3.5 text-slate-400'}) }} Membre depuis {{ user.createdAt ? user.createdAt|date('F Y') : 'mars 2024' }}</span>
                     </p>
 
                     <div class="flex items-center gap-2 pt-1">
-                        <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-lg">
-                            Conductrice certifiée
-                        </span>
+                        {% if driverTripsCount > 0 %}
+                            <span class="text-xs font-bold text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-lg">
+                                Conductrice certifiée
+                            </span>
+                        {% endif %}
                         <span class="text-xs font-semibold text-slate-500 bg-slate-50 px-2.5 py-0.5 rounded-lg border border-slate-200/60">
                             Passagère régulière
                         </span>
@@ -64,7 +67,7 @@
 
             <button type="button" onclick="alert('Messagerie sécurisée SafarCar ouverte avec {{ user.firstname }}.')"
                 class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-sm shadow-md shadow-emerald-700/20 hover:scale-[1.01] transition shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                {{ ux_icon('lucide:message-circle', {class: 'w-4 h-4'}) }}
                 <span>Contacter {{ user.firstname }}</span>
             </button>
         </div>
@@ -79,25 +82,30 @@
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/70">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Note Moyenne</span>
                 <div class="flex items-center gap-2 mt-1">
-                    <span class="text-2xl font-extrabold text-slate-900">{{ stats.average|default(4.9) }}</span>
+                    <span class="text-2xl font-extrabold text-slate-900">{{ stats.average ? stats.average|number_format(1) : '4.9' }}</span>
                     <span class="text-sm text-slate-400">/ 5.0</span>
-                    <span class="text-amber-400 text-sm">★★★★★</span>
+                    <span class="flex items-center text-amber-400 text-xs">
+                        {% for i in 1..5 %}
+                            {{ ux_icon('lucide:star', {class: 'w-3.5 h-3.5 fill-amber-400 text-amber-400'}) }}
+                        {% endfor %}
+                    </span>
                 </div>
-                <span class="text-xs text-slate-500 mt-1 block">Sur {{ stats.count|default(19) }} avis certifiés SafarCar</span>
+                <span class="text-xs text-slate-500 mt-1 block">Sur {{ stats.count|default(reviews|length) }} avis certifiés SafarCar</span>
             </div>
 
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/70">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Trajets Interurbains</span>
                 <div class="text-2xl font-extrabold text-slate-900 mt-1">
-                    28 <span class="text-sm font-semibold text-slate-500">trajets</span>
+                    {{ totalTrips|default(28) }} <span class="text-sm font-semibold text-slate-500">trajets</span>
                 </div>
-                <span class="text-xs text-slate-500 mt-1 block">18 en conductrice · 10 passagers</span>
+                <span class="text-xs text-slate-500 mt-1 block">{{ driverTripsCount }} en conducteur/trice · {{ passengerBookingsCount }} passager(s)</span>
             </div>
 
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200/70">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Taux de Ponctualité</span>
-                <div class="text-2xl font-extrabold text-emerald-700 mt-1">
-                    100% <span class="text-sm font-semibold text-slate-500">fiable</span>
+                <div class="text-2xl font-extrabold text-emerald-700 mt-1 flex items-center gap-2">
+                    <span>100%</span>
+                    <span class="text-sm font-semibold text-slate-500">fiable</span>
                 </div>
                 <span class="text-xs text-slate-500 mt-1 block">0 annulation · Réponse < 15 min</span>
             </div>
@@ -108,7 +116,7 @@
     <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div class="flex items-center gap-2">
-                <span class="text-emerald-600">🛡</span>
+                {{ ux_icon('lucide:shield-check', {class: 'w-5 h-5 text-emerald-600'}) }}
                 <h2 class="text-base font-bold text-slate-900 tracking-tight">Vérifications & Conformité</h2>
             </div>
             <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
@@ -119,19 +127,31 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70">
                 <span class="text-xs font-bold text-slate-800 block">CNI Nationale</span>
-                <span class="text-[11px] text-emerald-700 font-medium">✓ Certifiée CNDP</span>
+                <span class="text-[11px] text-emerald-700 font-medium flex items-center gap-1 mt-0.5">
+                    {{ ux_icon('lucide:check', {class: 'w-3 h-3 text-emerald-600'}) }}
+                    <span>Certifiée CNDP</span>
+                </span>
             </div>
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70">
                 <span class="text-xs font-bold text-slate-800 block">Permis de conduire</span>
-                <span class="text-[11px] text-emerald-700 font-medium">✓ Catégorie B validée</span>
+                <span class="text-[11px] text-emerald-700 font-medium flex items-center gap-1 mt-0.5">
+                    {{ ux_icon('lucide:check', {class: 'w-3 h-3 text-emerald-600'}) }}
+                    <span>Catégorie B validée</span>
+                </span>
             </div>
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70">
                 <span class="text-xs font-bold text-slate-800 block">Téléphone vérifié</span>
-                <span class="text-[11px] text-emerald-700 font-medium font-mono">✓ +212 6 •• •• 89</span>
+                <span class="text-[11px] text-emerald-700 font-medium font-mono flex items-center gap-1 mt-0.5">
+                    {{ ux_icon('lucide:check', {class: 'w-3 h-3 text-emerald-600'}) }}
+                    <span>+212 6 •• •• 89</span>
+                </span>
             </div>
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70">
                 <span class="text-xs font-bold text-slate-800 block">Assurance AXA</span>
-                <span class="text-[11px] text-emerald-700 font-medium">✓ Passagers protégés</span>
+                <span class="text-[11px] text-emerald-700 font-medium flex items-center gap-1 mt-0.5">
+                    {{ ux_icon('lucide:check', {class: 'w-3 h-3 text-emerald-600'}) }}
+                    <span>Passagers protégés</span>
+                </span>
             </div>
         </div>
     </div>
@@ -140,7 +160,7 @@
     <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <div class="flex items-center gap-2">
-                <span class="text-emerald-600">🚘</span>
+                {{ ux_icon('lucide:car', {class: 'w-5 h-5 text-emerald-600'}) }}
                 <h2 class="text-base font-bold text-slate-900 tracking-tight">Véhicule déclaré & Confort à bord</h2>
             </div>
             <span class="text-xs font-semibold text-slate-500">
@@ -148,33 +168,57 @@
             </span>
         </div>
 
-        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="space-y-1">
-                <div class="flex items-center gap-2">
-                    <span class="font-extrabold text-base text-slate-900">Peugeot 208 · Allure</span>
-                    <span class="text-xs font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">Gris Métallisé</span>
+        {% if vehicles|length > 0 %}
+            {% for v in vehicles %}
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="font-extrabold text-base text-slate-900">{{ v.brand }} {{ v.model }}</span>
+                            <span class="text-xs font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">{{ v.color|default('Gris Métallisé') }}</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-mono">
+                            {{ v.licensePlate }} • Série Maroc
+                        </p>
+                    </div>
+                    <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 shrink-0">
+                        {{ ux_icon('lucide:users', {class: 'w-3.5 h-3.5 text-emerald-700'}) }}
+                        <span>{{ v.seats }} places</span>
+                    </span>
                 </div>
-                <p class="text-xs text-slate-500">
-                    Immatriculé au Maroc (Série 26 - Marrakech / Agadir)
-                </p>
+            {% endfor %}
+        {% else %}
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span class="font-extrabold text-base text-slate-900">Peugeot 208 · Allure</span>
+                        <span class="text-xs font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">Gris Métallisé</span>
+                    </div>
+                    <p class="text-xs text-slate-500">
+                        Immatriculé au Maroc (Série 26 - Marrakech / Agadir)
+                    </p>
+                </div>
+                <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 shrink-0">
+                    Max 2 personnes à l'arrière
+                </span>
             </div>
-            <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 shrink-0">
-                👤 Max 2 personnes à l'arrière
-            </span>
-        </div>
+        {% endif %}
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs text-slate-700 pt-1">
             <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
-                <span>❄</span> <span>Climatisation régulée</span>
+                {{ ux_icon('lucide:wind', {class: 'w-4 h-4 text-cyan-600'}) }}
+                <span>Climatisation régulée</span>
             </div>
             <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
-                <span>🧳</span> <span>Grand coffre (Valise cabine)</span>
+                {{ ux_icon('lucide:briefcase', {class: 'w-4 h-4 text-slate-600'}) }}
+                <span>Grand coffre (Valise)</span>
             </div>
             <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
-                <span>🚭</span> <span>Véhicule non-fumeur</span>
+                {{ ux_icon('lucide:cigarette-off', {class: 'w-4 h-4 text-rose-600'}) }}
+                <span>Véhicule non-fumeur</span>
             </div>
             <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
-                <span>🐾</span> <span>Animaux non admis</span>
+                {{ ux_icon('lucide:shield-check', {class: 'w-4 h-4 text-emerald-600'}) }}
+                <span>Assurance AXA active</span>
             </div>
         </div>
     </div>
@@ -189,9 +233,9 @@
 
             <!-- Tab Filters -->
             <div class="flex items-center gap-1.5 text-xs font-bold">
-                <button type="button" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white">Tous (19)</button>
-                <button type="button" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">Conductrice (15)</button>
-                <button type="button" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">Passagère (4)</button>
+                <button type="button" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white">Tous ({{ reviews|length }})</button>
+                <button type="button" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">Conducteur/trice</button>
+                <button type="button" class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200">Passager/ère</button>
             </div>
         </div>
 
@@ -215,104 +259,59 @@
             </div>
         </div>
 
-        <!-- Review Cards List -->
+        <!-- Review Cards List (Dynamic from DB) -->
         <div class="space-y-4">
-            <!-- Review 1: Youssef Kaddouri -->
-            <div class="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2.5">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-full bg-slate-800 text-white font-bold text-xs flex items-center justify-center">YK</div>
-                        <div>
-                            <span class="font-bold text-sm text-slate-900">Youssef Kaddouri ✓</span>
-                            <span class="text-xs text-slate-400 block">Trajet Agadir → Marrakech (Tronçon complet autoroute A3)</span>
+            {% if reviews|length > 0 %}
+                {% for rev in reviews %}
+                    <div class="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-full bg-slate-800 text-white font-bold text-xs flex items-center justify-center">
+                                    {{ rev.author.firstname|first|upper }}{{ rev.author.lastname|first|upper }}
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-bold text-sm text-slate-900">{{ rev.author.firstname }} {{ rev.author.lastname }}</span>
+                                        {{ ux_icon('lucide:badge-check', {class: 'w-3.5 h-3.5 text-emerald-600'}) }}
+                                    </div>
+                                    {% if rev.trip %}
+                                        <span class="text-xs text-slate-400 block">Trajet {{ rev.trip.departureCity.name }} → {{ rev.trip.arrivalCity.name }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="flex items-center gap-0.5 justify-end text-amber-400 text-xs">
+                                    {% for s in 1..rev.rating %}
+                                        {{ ux_icon('lucide:star', {class: 'w-3.5 h-3.5 fill-amber-400 text-amber-400'}) }}
+                                    {% endfor %}
+                                </div>
+                                <span class="text-[11px] text-slate-400 block mt-0.5">{{ rev.createdAt|date('d M Y') }}</span>
+                            </div>
                         </div>
+                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
+                            « {{ rev.comment }} »
+                        </p>
                     </div>
-                    <div class="text-right">
-                        <span class="text-amber-400 text-sm">★★★★★</span>
-                        <span class="text-[11px] text-slate-400 block">Il y a 3 jours</span>
-                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="p-8 text-center text-slate-400 text-xs">
+                    {{ ux_icon('lucide:message-circle', {class: 'w-8 h-8 text-slate-300 mx-auto mb-2'}) }}
+                    <span>Aucun avis enregistré pour le moment.</span>
                 </div>
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                    « Voyage parfait avec Amina ! Conduite très prudente et sécurisante sur l'autoroute A3. Voiture impeccable et très ponctuelle au départ de la gare routière Al Massira. Je recommande les yeux fermés. »
-                </p>
-            </div>
-
-            <!-- Review 2: Salma Rahimi -->
-            <div class="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2.5">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-full bg-teal-700 text-white font-bold text-xs flex items-center justify-center">SR</div>
-                        <div>
-                            <span class="font-bold text-sm text-slate-900">Salma Rahimi ✓</span>
-                            <span class="text-xs text-slate-400 block">Trajet Agadir → Essaouira (Route côtière)</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-amber-400 text-sm">★★★★★</span>
-                        <span class="text-[11px] text-slate-400 block">Novembre 2024</span>
-                    </div>
-                </div>
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                    « Excellente expérience de covoiturage. Amina est très sympathique et très arrangeante pour le point de dépose à Bab Doukkala. Discussion très agréable tout le long du trajet. »
-                </p>
-            </div>
-
-            <!-- Review 3: Mehdi Tazi -->
-            <div class="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2.5">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-full bg-indigo-700 text-white font-bold text-xs flex items-center justify-center">MT</div>
-                        <div>
-                            <span class="font-bold text-sm text-slate-900">Mehdi Tazi ✓</span>
-                            <span class="text-xs text-slate-400 block">Trajet Essaouira → Marrakech</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-amber-400 text-sm">★★★★★</span>
-                        <span class="text-[11px] text-slate-400 block">Octobre 2024</span>
-                    </div>
-                </div>
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                    « Ponctuelle, voiture propre et climatisée. Pause de 10 min très appréciée à Chichaoua pour un café. Trajet fluide, convivial et sans le moindre stress. »
-                </p>
-            </div>
-
-            <!-- Review 4: Karim Berrada (Conducteur) -->
-            <div class="p-5 rounded-2xl bg-white border border-slate-200/80 space-y-2.5">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-full bg-emerald-700 text-white font-bold text-xs flex items-center justify-center">KB</div>
-                        <div>
-                            <span class="font-bold text-sm text-slate-900">Karim Berrada (Conducteur) ✓</span>
-                            <span class="text-xs text-slate-400 block">Amina voyageait comme passagère sur Casablanca → Marrakech</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-amber-400 text-sm">★★★★★</span>
-                        <span class="text-[11px] text-slate-400 block">Septembre 2024</span>
-                    </div>
-                </div>
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                    « Passagère modèle ! A l'heure exacte au point de rendez-vous à Casa Oasis, respectueuse et très agréable tout au long de la route. Au plaisir de voyager à nouveau ensemble. »
-                </p>
-            </div>
-        </div>
-
-        <div class="text-center pt-2">
-            <button type="button" onclick="alert('Chargement des avis antérieurs certifiés...')"
-                class="px-5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
-                Afficher les 15 autres avis
-            </button>
+            {% endif %}
         </div>
     </div>
 
     <!-- Charte de Confiance SafarCar Banner -->
     <div class="p-5 rounded-3xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs text-slate-600">
         <div class="flex items-center gap-3">
-            <span class="text-emerald-700 text-lg">🛡</span>
+            {{ ux_icon('lucide:shield-check', {class: 'w-5 h-5 text-emerald-700 shrink-0'}) }}
             <span><strong>Charte de confiance SafarCar :</strong> Toutes les réservations sont couvertes par l'assistance 24/7 et le paiement séquestre.</span>
         </div>
-        <a href="#charte" class="font-bold text-emerald-700 hover:underline shrink-0">En savoir plus →</a>
+        <a href="#charte" class="font-bold text-emerald-700 hover:underline shrink-0 flex items-center gap-1">
+            <span>En savoir plus</span>
+            {{ ux_icon('lucide:arrow-right', {class: 'w-3.5 h-3.5'}) }}
+        </a>
     </div>
 
 </div>

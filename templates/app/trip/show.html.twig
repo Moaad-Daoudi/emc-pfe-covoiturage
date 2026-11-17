@@ -20,8 +20,9 @@
         <!-- 1. Breadcrumbs & Status Bar -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
             <div class="flex items-center gap-2 text-slate-500 flex-wrap">
-                <a href="{{ path('app_home') }}" class="font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1">
-                    <span>←</span> Tous les trajets
+                <a href="{{ path('app_home') }}" class="font-bold text-brand-700 hover:text-brand-800 flex items-center gap-1.5">
+                    {{ ux_icon('lucide:arrow-left', {class: 'w-3.5 h-3.5'}) }}
+                    <span>Tous les trajets</span>
                 </a>
                 <span class="text-slate-300">/</span>
                 <span>Maroc Interurbain</span>
@@ -38,7 +39,8 @@
                 </span>
                 {% if stops|length > 2 %}
                     <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-semibold">
-                        <span>⏳</span> Escale {{ stops[1].city.name }}
+                        {{ ux_icon('lucide:clock', {class: 'w-3.5 h-3.5 text-amber-600'}) }}
+                        <span>Escale {{ stops[1].city.name }}</span>
                     </span>
                 {% endif %}
             </div>
@@ -60,7 +62,8 @@
                             Réf. : SC-{{ trip.id * 73 }}
                         </span>
                         <span class="inline-flex items-center gap-1 text-emerald-300 bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-800/60 text-[11px]">
-                            <span>🌱</span> Empreinte carbone réduite (-68%)
+                            {{ ux_icon('lucide:leaf', {class: 'w-3 h-3 text-emerald-400'}) }}
+                            <span>Empreinte carbone réduite (-68%)</span>
                         </span>
                     </div>
 
@@ -75,13 +78,16 @@
 
                     <div class="flex flex-wrap items-center gap-4 text-xs text-emerald-100/90 pt-1">
                         <span class="flex items-center gap-1.5">
-                            <span>📅</span> {{ trip.departureAt ? trip.departureAt|date('l d F Y') : 'Samedi 14 Novembre 2026' }}
+                            {{ ux_icon('lucide:calendar', {class: 'w-3.5 h-3.5 text-emerald-400'}) }}
+                            <span>{{ trip.departureAt ? trip.departureAt|date('l d F Y') : 'Samedi 14 Novembre 2026' }}</span>
                         </span>
                         <span class="flex items-center gap-1.5">
-                            <span>🕒</span> Départ à {{ trip.departureAt ? trip.departureAt|date('H:i') : '08:00' }}
+                            {{ ux_icon('lucide:clock', {class: 'w-3.5 h-3.5 text-emerald-400'}) }}
+                            <span>Départ à {{ trip.departureAt ? trip.departureAt|date('H:i') : '08:00' }}</span>
                         </span>
                         <span class="flex items-center gap-1.5">
-                            <span>⏱</span> {{ trip.distanceKm|default(230)|round }} km via Autoroute
+                            {{ ux_icon('lucide:navigation', {class: 'w-3.5 h-3.5 text-emerald-400'}) }}
+                            <span>{{ trip.distanceKm|default(230)|round }} km via Autoroute</span>
                         </span>
                     </div>
                 </div>
@@ -89,11 +95,11 @@
                 <!-- Right Trust Assurances -->
                 <div class="flex flex-col sm:flex-row lg:flex-col gap-2.5 flex-shrink-0 text-xs">
                     <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-900/50 border border-emerald-500/30 text-emerald-200">
-                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        {{ ux_icon('lucide:clock', {class: 'w-4 h-4 text-emerald-400'}) }}
                         <span>Réservation instantanée sans attente</span>
                     </div>
                     <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-900/50 border border-emerald-500/30 text-emerald-200">
-                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        {{ ux_icon('lucide:shield-check', {class: 'w-4 h-4 text-emerald-400'}) }}
                         <span>Conducteur certifié SafarCar Pro</span>
                     </div>
                 </div>
@@ -111,7 +117,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 rounded-xl bg-emerald-50 text-brand-600 flex items-center justify-center font-bold">
-                                🗺
+                                {{ ux_icon('lucide:compass', {class: 'w-5 h-5 text-brand-600'}) }}
                             </div>
                             <div>
                                 <h2 class="text-sm font-bold text-slate-900">Itinéraire cartographique officiel</h2>
@@ -130,7 +136,7 @@
                         
                         <!-- Map Bottom Pill Overlay -->
                         <div class="absolute bottom-3 left-3 z-[1000] bg-slate-900/80 backdrop-blur-md text-white text-[11px] px-3 py-1.5 rounded-lg border border-white/20 shadow-lg flex items-center gap-2">
-                            <span>🛣 {{ trip.distanceKm|default(230)|round }} km via A3</span>
+                            <span class="flex items-center gap-1.5">{{ ux_icon('lucide:car', {class: 'w-3.5 h-3.5 text-emerald-400'}) }} {{ trip.distanceKm|default(230)|round }} km via A3</span>
                             <span class="text-emerald-400">• Péage inclus</span>
                         </div>
                     </div>
@@ -187,8 +193,9 @@
                                     <div class="text-xs text-slate-600 font-medium mt-0.5">
                                         {{ stop.meetingPoint|default('Point de rendez-vous officiel') }}
                                     </div>
-                                    <div class="text-[11px] text-brand-700 font-semibold mt-1 flex items-center gap-1">
-                                        <span>📍</span> Point de rendez-vous géolocalisé et confirmé par le conducteur
+                                    <div class="text-[11px] text-brand-700 font-semibold mt-1 flex items-center gap-1.5">
+                                        {{ ux_icon('lucide:map-pin', {class: 'w-3.5 h-3.5 text-brand-600 shrink-0'}) }}
+                                        <span>Point de rendez-vous géolocalisé et confirmé par le conducteur</span>
                                     </div>
                                 </div>
                             </div>
@@ -200,7 +207,7 @@
                                     <div class="p-3.5 rounded-xl border {% if seg and seg.availableSeats == 1 %}bg-amber-50/60 border-amber-200{% else %}bg-emerald-50/40 border-emerald-200{% endif %} flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                         <div class="space-y-1">
                                             <div class="text-xs font-bold text-slate-900 flex items-center gap-2">
-                                                <span class="text-brand-600">✦</span>
+                                                {{ ux_icon('lucide:sparkles', {class: 'w-3.5 h-3.5 text-brand-600 shrink-0'}) }}
                                                 Tronçon {{ i + 1 }} : {{ stop.city.name }} → {{ stops[i + 1].city.name }}
                                             </div>
                                             <div class="text-[11px] text-slate-500">
@@ -211,11 +218,13 @@
                                         <div class="flex items-center gap-3 flex-shrink-0">
                                             {% if seg and seg.availableSeats == 1 %}
                                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold animate-pulse">
-                                                    <span>🔥</span> 1 seule place restante
+                                                    {{ ux_icon('lucide:alert-triangle', {class: 'w-3.5 h-3.5 text-rose-600'}) }}
+                                                    <span>1 seule place restante</span>
                                                 </span>
                                             {% elseif seg %}
                                                 <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold">
-                                                    <span>✓</span> {{ seg.availableSeats }} places disponibles
+                                                    {{ ux_icon('lucide:check', {class: 'w-3.5 h-3.5 text-emerald-600'}) }}
+                                                    <span>{{ seg.availableSeats }} places disponibles</span>
                                                 </span>
                                             {% endif %}
                                             <div class="text-right">
@@ -250,23 +259,24 @@
                                     {% endif %}
                                 </div>
                                 <div class="flex items-center gap-3 text-xs text-slate-500 mt-1">
-                                    <span class="text-amber-500 font-bold">★ {{ driverStats.average ? driverStats.average|number_format(1) : '4.9' }} / 5</span>
+                                    <span class="text-amber-500 font-bold flex items-center gap-1">{{ ux_icon('lucide:star', {class: 'w-3.5 h-3.5 fill-amber-400 text-amber-400'}) }} {{ driverStats.average ? driverStats.average|number_format(1) : '4.9' }} / 5</span>
                                     <span>({{ driverStats.count ? driverStats.count : '12' }} avis vérifiés)</span>
                                     <span class="text-slate-300">•</span>
-                                    <span class="text-brand-600 font-semibold">⚡ Répond en ~15 min</span>
+                                    <span class="text-brand-600 font-semibold flex items-center gap-1">{{ ux_icon('lucide:clock', {class: 'w-3.5 h-3.5 text-brand-600'}) }} Répond en ~15 min</span>
                                 </div>
                                 <div class="flex flex-wrap items-center gap-2 mt-2 text-[11px] text-slate-600">
-                                    <span class="inline-flex items-center gap-1 text-emerald-700"><span>✓</span> CNI marocaine validée</span>
+                                    <span class="inline-flex items-center gap-1 text-emerald-700">{{ ux_icon('lucide:shield-check', {class: 'w-3.5 h-3.5 text-emerald-600'}) }} CNI marocaine validée</span>
                                     <span class="text-slate-300">•</span>
-                                    <span class="inline-flex items-center gap-1 text-emerald-700"><span>✓</span> Permis > 5 ans</span>
+                                    <span class="inline-flex items-center gap-1 text-emerald-700">{{ ux_icon('lucide:shield-check', {class: 'w-3.5 h-3.5 text-emerald-600'}) }} Permis > 5 ans</span>
                                     <span class="text-slate-300">•</span>
-                                    <span class="inline-flex items-center gap-1 text-emerald-700"><span>✓</span> Assurance à jour</span>
+                                    <span class="inline-flex items-center gap-1 text-emerald-700">{{ ux_icon('lucide:shield-check', {class: 'w-3.5 h-3.5 text-emerald-600'}) }} Assurance à jour</span>
                                 </div>
                             </div>
                         </div>
 
-                        <a href="{{ path('app_home') }}" class="text-xs font-bold text-slate-700 hover:text-brand-600 border border-slate-200 rounded-xl px-3 py-2 text-center transition">
-                            Voir son profil →
+                        <a href="{{ path('app_user_show', {id: driver.id}) }}" class="text-xs font-bold text-slate-700 hover:text-brand-600 border border-slate-200 rounded-xl px-3 py-2 text-center transition flex items-center gap-1 shrink-0">
+                            <span>Voir son profil</span>
+                            {{ ux_icon('lucide:chevron-right', {class: 'w-3.5 h-3.5'}) }}
                         </a>
                     </div>
 
@@ -281,7 +291,9 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                             <!-- 1. Car -->
                             <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
-                                <span class="text-base flex-shrink-0">🚗</span>
+                                <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                                    {{ ux_icon('lucide:car', {class: 'w-4 h-4 text-emerald-700'}) }}
+                                </div>
                                 <div>
                                     <div class="font-bold text-slate-800">
                                         {% if trip.vehicle %}{{ trip.vehicle.brand }} {{ trip.vehicle.model }}{% else %}Renault Mégane IV{% endif %}
@@ -292,7 +304,9 @@
 
                             <!-- 2. AC -->
                             <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
-                                <span class="text-base flex-shrink-0">❄️</span>
+                                <div class="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-700 flex items-center justify-center shrink-0">
+                                    {{ ux_icon('lucide:wind', {class: 'w-4 h-4 text-cyan-700'}) }}
+                                </div>
                                 <div>
                                     <div class="font-bold text-slate-800">Climatisation régulée</div>
                                     <div class="text-[11px] text-slate-500">Fraîcheur garantie durant tout le voyage</div>
@@ -301,7 +315,9 @@
 
                             <!-- 3. Luggage -->
                             <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
-                                <span class="text-base flex-shrink-0">🧳</span>
+                                <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                                    {{ ux_icon('lucide:briefcase', {class: 'w-4 h-4 text-slate-700'}) }}
+                                </div>
                                 <div>
                                     <div class="font-bold text-slate-800">Bagages acceptés</div>
                                     <div class="text-[11px] text-slate-500">1 valise cabine (max 10kg) + sac à dos</div>
@@ -310,7 +326,9 @@
 
                             <!-- 4. Max 2 back -->
                             <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/80 flex items-start gap-3">
-                                <span class="text-base flex-shrink-0">👥</span>
+                                <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                                    {{ ux_icon('lucide:users', {class: 'w-4 h-4 text-slate-700'}) }}
+                                </div>
                                 <div>
                                     <div class="font-bold text-slate-800">Max. 2 passagers à l'arrière</div>
                                     <div class="text-[11px] text-slate-500">Espace généreux garanti pour vos jambes</div>
@@ -319,7 +337,9 @@
 
                             <!-- 5. Non-smoking (Full width) -->
                             <div class="sm:col-span-2 p-3 bg-rose-50/50 rounded-xl border border-rose-200 flex items-start gap-3">
-                                <span class="text-base flex-shrink-0">🚭</span>
+                                <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center shrink-0">
+                                    {{ ux_icon('lucide:cigarette-off', {class: 'w-4 h-4 text-rose-700'}) }}
+                                </div>
                                 <div>
                                     <div class="font-bold text-rose-900">Habitacle strictement non-fumeur</div>
                                     <div class="text-[11px] text-rose-700">Cigarettes électroniques et tabac non autorisés à bord</div>
@@ -388,7 +408,7 @@
                         <!-- Route Summary Pill -->
                         <div class="p-2.5 bg-emerald-50/70 rounded-xl border border-emerald-200/70 flex items-center justify-between text-xs">
                             <div class="flex items-center gap-2 text-brand-900 font-bold">
-                                <span>🛣</span>
+                                {{ ux_icon('lucide:car', {class: 'w-3.5 h-3.5 text-brand-700 shrink-0'}) }}
                                 <span id="booking-route-label">Trajet complet : {{ selectedFromStop.city.name }} → {{ selectedToStop.city.name }}</span>
                             </div>
                             <span id="booking-distance-badge" class="text-emerald-700 font-medium text-[11px]">
@@ -406,7 +426,8 @@
                             </div>
                             <div class="flex items-center justify-between bg-slate-50 rounded-xl border border-slate-200 p-2">
                                 <span class="text-xs font-semibold text-slate-600 flex items-center gap-1.5 ml-2">
-                                    <span>👤</span> Passagers réservés
+                                    {{ ux_icon('lucide:user', {class: 'w-3.5 h-3.5 text-slate-500'}) }}
+                                    <span>Passagers réservés</span>
                                 </span>
                                 <div class="flex items-center gap-3">
                                     <button type="button" id="btn-seats-minus" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-700 font-bold hover:bg-slate-100 flex items-center justify-center transition disabled:opacity-40" disabled>-</button>
@@ -419,7 +440,7 @@
 
                         <!-- Capacity Warning Banner (Dynamic) -->
                         <div id="bottleneck-warning" class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-800 flex items-start gap-2 {% if activeSubTrip.availableSeats > 1 %}hidden{% endif %}">
-                            <span class="text-amber-600 font-bold">ⓘ</span>
+                            {{ ux_icon('lucide:info', {class: 'w-4 h-4 text-amber-600 shrink-0 mt-0.5'}) }}
                             <span>Limité à 1 place sur ce trajet complet (contrainte du tronçon le plus demandé).</span>
                         </div>
 
@@ -453,13 +474,14 @@
 
                         <!-- CTA Button -->
                         <button type="submit" id="btn-submit-booking" class="w-full py-3.5 px-4 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-900/20 hover:shadow-brand-900/30 transition flex items-center justify-center gap-2 group">
-                            <span>⚡ Réserver instantanément • <span id="btn-cta-price">{{ activeSubTrip.price }} DH</span></span>
-                            <span class="group-hover:translate-x-1 transition duration-150">→</span>
+                            <span>Réserver instantanément • <span id="btn-cta-price">{{ activeSubTrip.price }} DH</span></span>
+                            {{ ux_icon('lucide:arrow-right', {class: 'w-4 h-4 group-hover:translate-x-1 transition duration-150'}) }}
                         </button>
 
                         <!-- Guarantee notes -->
-                        <div class="text-[11px] text-slate-500 leading-relaxed text-center pt-2">
-                            <span>🔒</span> Paiement sécurisé CMI / Cartes marocaines & internationales. Annulation 100% sans frais jusqu'à 24h avant le départ, bien après confirmation du trajet.
+                        <div class="text-[11px] text-slate-500 leading-relaxed text-center pt-2 flex items-center justify-center gap-1.5">
+                            {{ ux_icon('lucide:lock', {class: 'w-3.5 h-3.5 text-slate-400 shrink-0'}) }}
+                            <span>Paiement sécurisé CMI / Cartes marocaines & internationales. Annulation sans frais jusqu'à 24h avant départ.</span>
                         </div>
                     </form>
                 </div>
@@ -468,36 +490,40 @@
                 <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex items-center justify-between gap-3 text-xs">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-slate-100 text-brand-600 flex items-center justify-center text-lg flex-shrink-0">
-                            💬
+                            {{ ux_icon('lucide:message-circle', {class: 'w-5 h-5 text-brand-600'}) }}
                         </div>
                         <div>
                             <div class="font-bold text-slate-900">Une question pour {{ driver.firstName }} ?</div>
                             <div class="text-[11px] text-slate-500">Posez vos questions sur le lieu de départ ou vos valises.</div>
                         </div>
                     </div>
-                    <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex-shrink-0 flex items-center gap-1 transition">
+                    <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs flex-shrink-0 flex items-center gap-1.5 transition">
                         <span>Écrire</span>
-                        <span class="text-[10px]">▷</span>
+                        {{ ux_icon('lucide:send', {class: 'w-3 h-3 text-slate-500'}) }}
                     </button>
                 </div>
 
                 <!-- Quality Commitment Card -->
                 <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3 text-xs">
                     <div class="flex items-center gap-2 font-bold text-slate-900 text-sm">
-                        <span class="text-brand-600">🛡</span>
+                        {{ ux_icon('lucide:shield-check', {class: 'w-4 h-4 text-brand-600'}) }}
                         <span>Engagement Qualité SafarCar Maroc</span>
                     </div>
                     <div class="space-y-2 text-slate-600 text-[11px] leading-relaxed">
                         <div class="flex items-start gap-2">
-                            <span class="text-emerald-500 font-bold mt-0.5">✓</span>
+                            {{ ux_icon('lucide:check', {class: 'w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0'}) }}
                             <span>Conducteurs identifiés avec Carte Nationale marocaine physique et vérification de permis.</span>
                         </div>
                         <div class="flex items-start gap-2">
-                            <span class="text-emerald-500 font-bold mt-0.5">✓</span>
+                            {{ ux_icon('lucide:check', {class: 'w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0'}) }}
                             <span>Assurance complémentaire passager incluse sur tous les trajets autoroutiers nationaux.</span>
                         </div>
                         <div class="flex items-start gap-2">
-                            <span class="text-emerald-500 font-bold mt-0.5">✓</span>
+                            {{ ux_icon('lucide:check', {class: 'w-3.5 h-3.5 text-emerald-500 mt-0.5 shrink-0'}) }}
+                            <span>Support client dédié basé à Casablanca, disponible 7j/7 par téléphone et WhatsApp.</span>
+                        </div>
+                    </div>
+                </div>
                             <span>Support client dédié basé à Casablanca, disponible 7j/7 par téléphone et WhatsApp.</span>
                         </div>
                     </div>

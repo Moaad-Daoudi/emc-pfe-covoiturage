@@ -98,12 +98,17 @@
 
         <!-- Trajets Populaires Pills (Matching Stitch Screen S01) -->
         <div class="mt-5 flex flex-wrap items-center justify-center gap-2.5 text-xs text-white">
-            <span class="font-bold text-amber-300 flex items-center gap-1 drop-shadow-sm">
-                <span>🔥</span> Trajets populaires :
+            <span class="font-bold text-amber-300 flex items-center gap-1.5 drop-shadow-sm">
+                {{ ux_icon('lucide:trending-up', {class: 'w-3.5 h-3.5 text-amber-300'}) }}
+                <span>Trajets populaires :</span>
             </span>
             {% for p in popularPills %}
                 <a href="{{ path('app_home', {origin: p.from, destination: p.to}) }}" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 hover:bg-black/60 border border-white/20 text-white transition backdrop-blur-md shadow-sm hover:scale-105 transform duration-150">
-                    <span class="font-medium">{{ p.from }} ⇄ {{ p.to }}</span>
+                    <span class="font-medium flex items-center gap-1.5">
+                        {{ p.from }}
+                        {{ ux_icon('lucide:arrow-right', {class: 'w-3 h-3 text-emerald-300'}) }}
+                        {{ p.to }}
+                    </span>
                     <span class="font-extrabold text-emerald-400">{{ p.price }} DH</span>
                 </a>
             {% endfor %}
@@ -524,7 +529,8 @@
         <!-- Section Header -->
         <div class="text-center max-w-2xl mx-auto mb-12">
             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold uppercase tracking-wider mb-3">
-                <span>✦</span> L'EXPÉRIENCE SAFARCAR MAROC
+                {{ ux_icon('lucide:badge-check', {class: 'w-3.5 h-3.5 text-emerald-600'}) }}
+                <span>L'EXPÉRIENCE SAFARCAR MAROC</span>
             </div>
             <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
                 Pourquoi choisir SafarCar ?
@@ -539,48 +545,45 @@
             <!-- Card 1: Confort & Sérénité -->
             <div class="bg-white p-7 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
                 <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-5">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
+                    {{ ux_icon('lucide:sparkles', {class: 'w-6 h-6 text-emerald-600'}) }}
                 </div>
                 <h3 class="text-lg font-extrabold text-slate-900 mb-2">Confort & Sérénité</h3>
                 <p class="text-xs text-slate-600 leading-relaxed mb-4">
                     Voyagez l'esprit tranquille : maximum 2 passagers sur la banquette arrière, climatisation systématique et véhicules récents inspectés.
                 </p>
                 <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700">
-                    <span class="text-emerald-500">✓</span> Espace personnel respecté
+                    {{ ux_icon('lucide:check', {class: 'w-3.5 h-3.5 text-emerald-600'}) }}
+                    <span>Espace personnel respecté</span>
                 </div>
             </div>
 
             <!-- Card 2: Sécurité Maximale -->
             <div class="bg-white p-7 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
                 <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-5">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                    </svg>
+                    {{ ux_icon('lucide:shield-check', {class: 'w-6 h-6 text-emerald-600'}) }}
                 </div>
                 <h3 class="text-lg font-extrabold text-slate-900 mb-2">Sécurité Maximale</h3>
                 <p class="text-xs text-slate-600 leading-relaxed mb-4">
                     Vérification humaine et obligatoire de la CNI marocaine, du permis de conduire et de l'assurance valide conforme aux directives CNDP.
                 </p>
                 <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700">
-                    <span class="text-emerald-500">✓</span> Identité certifiée à 100%
+                    {{ ux_icon('lucide:check', {class: 'w-3.5 h-3.5 text-emerald-600'}) }}
+                    <span>Identité certifiée à 100%</span>
                 </div>
             </div>
 
             <!-- Card 3: Paiement & Flexibilité -->
             <div class="bg-white p-7 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
                 <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-5">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                    </svg>
+                    {{ ux_icon('lucide:credit-card', {class: 'w-6 h-6 text-blue-600'}) }}
                 </div>
                 <h3 class="text-lg font-extrabold text-slate-900 mb-2">Paiement & Flexibilité</h3>
                 <p class="text-xs text-slate-600 leading-relaxed mb-4">
                     Réglez en ligne par carte marocaine CMI sécurisée ou en espèces au départ. Annulation gratuite et remboursement instantané jusqu'à H-24.
                 </p>
                 <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700">
-                    <span class="text-emerald-500">✓</span> Zéro frais cachés
+                    {{ ux_icon('lucide:check', {class: 'w-3.5 h-3.5 text-blue-600'}) }}
+                    <span>Zéro frais cachés</span>
                 </div>
             </div>
         </div>
