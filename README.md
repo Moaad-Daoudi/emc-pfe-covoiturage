@@ -2,7 +2,7 @@
 > **PFE Challenge EMC 2026** — Education Media Company (Technopark Souss Massa, Agadir)  
 > **Candidate:** Moaad Daoudi (State Digital Transformation & AI Engineer Student, ENSA Al Hoceima)  
 > **Subject:** Subject 3 — Regional Carpooling Platform (Sujet 3 — Plateforme de covoiturage régional)  
-> **Stack:** Symfony 7.4 (PHP 8.3), MySQL 8.0, Docker, Doctrine ORM, Twig, Tailwind CSS, Stimulus, OSRM & Nominatim APIs
+> **Stack & Tools:** Symfony 7.4 (PHP 8.3), MySQL 8.0, Docker, Doctrine ORM, Twig, Tailwind CSS, Stitch AI (UI Design), Stimulus, OSRM & Nominatim APIs
 
 ---
 

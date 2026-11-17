@@ -66,6 +66,7 @@ C) HOW YOU WORK DAILY VIA DOCKER:
 - Symfony Security Bundle (ROLE_USER, ROLE_ADMIN, and contextual Voters)
 - Twig (server-side template engine)
 - Tailwind CSS (via Symfony AssetMapper)
+- Stitch AI (UI design prototyping & front-end component generation)
 - Symfony UX / Stimulus (dynamic front-end interactions)
 - Leaflet.js (interactive OpenStreetMap visualization)
 
@@ -88,6 +89,7 @@ C) HOW YOU WORK DAILY VIA DOCKER:
 
 [AI TRACES BONUS (+15 pts)]
 - Google AI Studio (Gemini Hydrogen): Architecture design, prompt iteration
+- Stitch AI: UI wireframing & responsive Tailwind CSS layout generation
 - Antigravity: Code scaffolding, Docker configuration, automated tests
 - traces-ia.zip archive with exported prompts + mandatory LISEZMOI.md report
 ================================================================================

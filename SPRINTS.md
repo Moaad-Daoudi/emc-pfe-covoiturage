@@ -128,10 +128,10 @@ flowchart LR
 ---
 
 ### 🔹 Sprint 3: Level 3 — Product Experience & 11 UI Screens (Day 4 - Day 5)
-> **Goal:** Build an intuitive, responsive user experience (Tailwind + Stimulus) covering all passenger and driver flows.
+> **Goal:** Build an intuitive, responsive user experience (Tailwind + Stimulus, prototyped via Stitch AI) covering all passenger and driver flows.
 
 - [ ] **T-301: Base Layout & Design System (`templates/base.html.twig`)**
-  - Integrate Tailwind CSS (via AssetMapper) and Lucide Icons.
+  - Integrate Tailwind CSS (via AssetMapper), Lucide Icons, and Stitch AI-generated responsive components.
   - Clean dual-role navigation bar (*Find a Ride*, *Publish a Ride*, *My Bookings*, *Driver Space*, *My Account*).
   - Business-oriented flash messages (success, capacity warnings, booking errors).
 - [ ] **T-302: Screen S01 — Home & Search Experience (`/`)**

@@ -12,6 +12,7 @@
 | AI Tool | Model / Version | Scope & Responsibility |
 | :--- | :--- | :--- |
 | **Google AI Studio** | Gemini Hydrogen (Advanced / Reasoning) | Strategic domain scoping, relational entity architecture, and multi-leg segment decomposition logic. |
+| **Stitch AI** | UI & Front-end Generation Engine | Rapid prototyping and generation of modern, responsive Tailwind CSS UI layouts, form mockups, and dashboard views. |
 | **Antigravity (AI Agent)** | Autonomous Development Agent | Multi-container Docker configuration, Symfony 7.4 scaffolding, pessimistic locking concurrency implementation, PHPUnit test generation, and documentation. |
 
 ---
@@ -36,6 +37,7 @@ traces-ia/
 ## 3. The 3 Key Learnings & Critical Engineering Mindset
 
 ### A. Where AI Saved Significant Time (Productivity Gains)
+- **UI/UX Design with Stitch AI:** Dramatically sped up front-end development by generating cohesive, accessible Tailwind CSS components and page layouts for the 11 user-facing views (trip search, dynamic booking timeline, driver passenger manifest).
 - **Scaffolding & Architecture Blueprinting:** Rapidly structured the 5-sprint roadmap, defined the 11 user-facing UI screens without bloat, and configured multi-container Dockerfiles (PHP 8.3-FPM + Nginx + MySQL 8.0) avoiding host-level Windows configuration issues.
 - **Moroccan Demo Data Generation:** Accelerated the creation of realistic `AppFixtures` with accurate GPS coordinates for 15 Moroccan cities, realistic driver profiles, and multi-stop journeys.
 
