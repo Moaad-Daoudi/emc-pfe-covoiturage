@@ -38,6 +38,7 @@ ehthumbs.db
 
 ### Archives & Secrets ###
 *.zip
+!traces-ia.zip
 *.tar.gz
 *.log
 
