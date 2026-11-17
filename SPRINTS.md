@@ -114,7 +114,7 @@ flowchart LR
   - Wrap the booking logic inside `$entityManager->wrapInTransaction()`.
   - Execute pessimistic write locks (`LockMode::PESSIMISTIC_WRITE` / `SELECT ... FOR UPDATE`) on target `TripSegment` entities.
   - Decrement seats atomically; trigger automatic transaction rollback if capacity is exceeded.
-- [ ] **T-203: Distinct Cancellation Policies**
+- [x] **T-203: Distinct Cancellation Policies**
   - **Passenger Cancellation**: Immediate seat release across booked segments, update status to `CANCELLED_PASSENGER`. Implement threshold rules (>24h: 100% refund, <24h: 50%).
   - **Driver Cancellation**: Cascading cancellation of all related passenger bookings with status `CANCELLED_DRIVER` and notifications.
 - [ ] **T-204: Review Eligibility Guardrails**

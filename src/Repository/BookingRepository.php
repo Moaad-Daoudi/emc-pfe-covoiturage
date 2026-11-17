@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Domain\Enum\BookingStatus;
 use App\Entity\Booking;
+use App\Entity\Trip;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +19,33 @@ class BookingRepository extends ServiceEntityRepository
         parent::__construct($registry, Booking::class);
     }
 
-//    /**
-//     * @return Booking[] Returns an array of Booking objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('b.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Booking[]
+     */
+    public function findConfirmedByTrip(Trip $trip): array
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.trip = :trip')
+            ->andWhere('b.status = :status')
+            ->setParameter('trip', $trip)
+            ->setParameter('status', BookingStatus::CONFIRMED)
+            ->orderBy('b.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Booking
-//    {
-//        return $this->createQueryBuilder('b')
-//            ->andWhere('b.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Booking[]
+     */
+    public function findConfirmedByPassenger(User $passenger): array
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.passenger = :passenger')
+            ->andWhere('b.status = :status')
+            ->setParameter('passenger', $passenger)
+            ->setParameter('status', BookingStatus::CONFIRMED)
+            ->orderBy('b.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

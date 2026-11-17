@@ -16,7 +16,7 @@
 ## Sprint 2: Level 2 — Concurrency, Business Rules & Tests
 - [x] `BookingService` domain service with multi-segment inventory validation (T-201).
 - [x] Pessimistic locking (`PESSIMISTIC_WRITE`) transaction engine (T-202).
-- [ ] Distinct cancellation policies for Driver and Passenger.
+- [x] Distinct cancellation policies for Driver and Passenger (T-203).
 - [ ] Post-trip review eligibility rules.
 - [ ] Automated test suite with PHPUnit (`tests/`).
 
