@@ -67,4 +67,20 @@ class BookingRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return Booking[]
+     */
+    public function findAllByPassenger(User $passenger): array
+    {
+        return $this->createQueryBuilder('b')
+            ->leftJoin('b.trip', 't')->addSelect('t')
+            ->leftJoin('b.boardingStop', 'bs')->addSelect('bs')
+            ->leftJoin('b.alightingStop', 'as_stop')->addSelect('as_stop')
+            ->where('b.passenger = :passenger')
+            ->setParameter('passenger', $passenger)
+            ->orderBy('t.departureAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

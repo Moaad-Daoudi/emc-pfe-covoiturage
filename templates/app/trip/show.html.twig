@@ -354,7 +354,7 @@
                     </div>
 
                     <!-- Origin & Destination Selector Form -->
-                    <form id="booking-interactive-form" action="{{ path('app_home') }}#checkout" method="GET" class="space-y-4">
+                    <form id="booking-interactive-form" action="{{ path('app_trip_checkout', {id: trip.id}) }}" method="GET" class="space-y-4">
                         <!-- Origin Stop Selector -->
                         <div>
                             <div class="flex justify-between text-xs mb-1">

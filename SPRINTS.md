@@ -146,12 +146,18 @@ flowchart LR
   - Step-by-step segment timeline with stop badges, meeting addresses, and dynamic urgency badges ("1 seule place restante").
   - Driver profile card with photo initials, "SUPER CONDUCTEUR" badge, rating stars, verification pills (CNI, Permis >5 ans, Assurance), and 5-card comfort grid (AC, luggage, 2 back, non-smoker).
   - Sticky interactive booking configuration module with client-side reactive sub-trip matrix: changing origin and destination dynamically recalculates price, bottleneck capacity, distance, and warning alerts without page reload.
-- [ ] **T-304: Screen S03 — Simulated Checkout (`/bookings/{id}/checkout`)**
-  - Clean summary, policy reminders, and one-click transactional booking trigger.
-- [ ] **T-305: Screen S04 — Passenger Dashboard (`/my/bookings`)**
-  - *Upcoming* and *Past* tabs.
-  - Cancellation modal with policy reminders.
-  - Dynamic "Leave a Review" button when the trip status is `COMPLETED`.
+- [x] **T-304: Screen S03 — Simulated Checkout (`/trips/{id}/checkout`)**
+  - 3-step progress bar (Sélection trajet, Coordonnées, Paiement & Confirmation).
+  - Verified passenger identity card with WhatsApp notification notice.
+  - Payment options selection (SafarCar Express simulé, Carte CMI / Visa / Mastercard 3D-Secure, Espèces au conducteur).
+  - Complete T-203 flexible cancellation policy recap (>24h: 100%, <24h: 50% refund).
+  - Sticky route summary card with driver badge, vehicle info, exact timeline, and transparent price breakdown (0 DH hidden fees).
+- [x] **T-305: Screen S04 — Passenger Dashboard (`/my/bookings`)**
+  - "Espace Passager Privilège" with 3 top KPI metric cards (Trajets à venir, Économies réalisées, CO₂ évité).
+  - Dual tabs (Trajets à venir & Historique des voyages passés).
+  - Real-time booking card with remaining countdown, boarding/drop-off points, direct driver call & WhatsApp CTAs.
+  - Interactive actions: digital boarding pass, itinerary link, and atomic cancellation modal with automatic refund calculation.
+  - Completed trip review trigger button and AXA insurance guarantee banner.
 - [ ] **T-306: Screen S05 — Publish a Trip (`/driver/trips/new`)**
   - Stimulus controller for dynamically adding and removing intermediate stops without page reloads.
   - Vehicle selector and default price inputs.
