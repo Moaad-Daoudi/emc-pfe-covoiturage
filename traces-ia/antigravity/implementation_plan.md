@@ -1,10 +1,10 @@
 # 📐 Technical Implementation Plan & Sprint Tracker
 
 ## Sprint 0: DevOps & Initial Skeleton
-- [ ] Create `Dockerfile` (PHP 8.3-FPM + Composer + required extensions).
-- [ ] Configure `docker-compose.yml` (Services: php, web Nginx, db MySQL 8.0).
-- [ ] Initialize Symfony 7.4 project via Composer within the container.
-- [ ] Verify `http://localhost:8000` and push the initial Git commit.
+- [x] Create `Dockerfile` (PHP 8.3-FPM + Composer + required extensions).
+- [x] Configure `docker-compose.yml` (Services: php, web Nginx, db MySQL 8.0).
+- [x] Initialize Symfony 7.4 project via Composer within the container.
+- [x] Verify database connection and push the initial Git commit.
 
 ## Sprint 1: Level 1 — Domain Model & Back-Office
 - [ ] Entities: `User`, `Vehicle`, `City`, `Trip`, `TripStop`, `TripSegment`, `Booking`, `BookingSegment`, `Review`.

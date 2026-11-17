@@ -1,0 +1,60 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: covoit_php
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+    environment:
+      APP_ENV: dev
+      APP_SECRET: 3f7e91a0b5c4d8e2f1a6c8e9b0d2f4a6
+      DATABASE_URL: "mysql://covoit:secret@database:3306/covoiturage?serverVersion=8.0.32&charset=utf8mb4"
+    networks:
+      - covoit_network
+    depends_on:
+      database:
+        condition: service_healthy
+
+  web:
+    image: nginx:alpine
+    container_name: covoit_web
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html:ro
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - covoit_network
+    depends_on:
+      - php
+
+  database:
+    image: mysql:8.0
+    container_name: covoit_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootsecret
+      MYSQL_DATABASE: covoiturage
+      MYSQL_USER: covoit
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - covoit_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootsecret"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+networks:
+  covoit_network:
+    driver: bridge
+
+volumes:
+  db_data:

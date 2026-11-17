@@ -23,3 +23,12 @@
 
 ### 3. Sprint Planning
 - Authored the comprehensive roadmap `SPRINTS.md` organizing the 7-day effort into 5 cumulative sprints aligned with the 5 challenge levels.
+
+## Session 02: Sprint 0 Execution — Docker Orchestration & Symfony 7.4 Setup
+**Date:** November 17, 2026  
+**Tool:** Antigravity AI Agent  
+**Accomplishments:**
+- Configured multi-container Docker architecture: `php` (PHP 8.3 FPM, Composer 2, pdo_mysql, intl, opcache, zip, apcu), `web` (Nginx), and `database` (MySQL 8.0).
+- Successfully bootstrapped Symfony 7.4.23 skeleton and installed full webapp/orm packs.
+- Tested and verified database connectivity to MySQL 8.0: database `covoiturage` created and verified.
+- Handled Flex automated recipes cleanly (resolved PostgreSQL conflicts injected by Doctrine Flex recipe).
