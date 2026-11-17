@@ -7,16 +7,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
-#[ORM\Table(
-    name: 'review',
-    uniqueConstraints: [
-        new ORM\UniqueConstraint(
-            name: 'uniq_review_author_target_trip',
-            columns: ['author_id', 'target_id', 'trip_id']
-        )
-    ]
-)]
-
+#[ORM\Table(name: 'review')]
+#[ORM\UniqueConstraint(name: 'uniq_review_author_target_trip', columns: ['author_id', 'target_id', 'trip_id'])]
 class Review
 {
     #[ORM\Id]

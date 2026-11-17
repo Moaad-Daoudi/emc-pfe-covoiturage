@@ -18,7 +18,7 @@
 - [x] Pessimistic locking (`PESSIMISTIC_WRITE`) transaction engine (T-202).
 - [x] Distinct cancellation policies for Driver and Passenger (T-203).
 - [x] Post-trip review eligibility rules (T-204).
-- [ ] Automated test suite with PHPUnit (`tests/`).
+- [x] Automated test suite with PHPUnit (`tests/`) (T-205).
 
 ## Sprint 3: Level 3 — Product & 11 UI Screens
 - [ ] Security: 2 Technical Roles (`ROLE_USER`, `ROLE_ADMIN`) + contextual Symfony Voters.

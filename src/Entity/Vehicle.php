@@ -118,6 +118,11 @@ class Vehicle
         return $this->seats;
     }
 
+    public function getAvailableSeats(): ?int
+    {
+        return $this->seats;
+    }
+
     public function setSeats(int $seats): static
     {
         $this->seats = $seats;

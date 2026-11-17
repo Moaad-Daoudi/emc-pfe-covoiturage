@@ -119,7 +119,7 @@ flowchart LR
   - **Driver Cancellation**: Cascading cancellation of all related passenger bookings with status `CANCELLED_DRIVER` and notifications.
 - [x] **T-204: Review Eligibility Guardrails**
   - Enforce prerequisite conditions: Trip must be `COMPLETED`, booking must be `CONFIRMED`, and limit to 1 review per participant per trip.
-- [ ] **T-205: Automated Test Suite with PHPUnit (`tests/`)**
+- [x] **T-205: Automated Test Suite with PHPUnit (`tests/`)**
   - `SegmentOverlapTest`: Unit test validating available seat calculations across multi-leg journeys.
   - `BookingConcurrencyTest`: Integration test simulating concurrent requests competing for the last available seat.
   - `CancellationRulesTest`: Unit tests for passenger vs driver cancellation policies.

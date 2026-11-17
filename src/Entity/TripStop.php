@@ -8,16 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TripStopRepository::class)]
-#[ORM\Table(
-    name: 'trip_stop',
-    uniqueConstraints: [
-        new ORM\UniqueConstraint(
-            name: 'uniq_trip_stop_order',
-            columns: ['trip_id', 'stop_order']
-        )
-    ]
-)]
-
+#[ORM\Table(name: 'trip_stop')]
+#[ORM\UniqueConstraint(name: 'uniq_trip_stop_order', columns: ['trip_id', 'stop_order'])]
 class TripStop
 {
     #[ORM\Id]

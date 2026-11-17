@@ -164,7 +164,7 @@ final class CancellationService
             );
 
             $seatsToRestore = $booking->getSeatsBooked() ?? 0;
-            $maxVehicleSeats = $trip->getVehicle()?->getAvailableSeats() ?? 99;
+            $maxVehicleSeats = $trip->getVehicle()?->getSeats() ?? $trip->getTotalSeats() ?? 99;
 
             // C. Atomically restore seats on each segment
             foreach ($segments as $segment) {
