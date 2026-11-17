@@ -187,9 +187,12 @@ flowchart LR
 ### 🔹 Sprint 4: Level 4 — External APIs (Nominatim + OSRM) & Dynamic Pricing (Day 6)
 > **Goal:** Power the platform with OpenStreetMap geocoding, real OSRM road routing, and automated suggested pricing.
 
-- [ ] **T-401: Nominatim Geocoding Service (`NominatimService`)**
-  - Symfony HttpClient integration querying Nominatim API.
-  - Filesystem/Redis caching layer for coordinates to strictly respect OSM usage policies.
+- [x] **T-401: Nominatim Geocoding Service (`NominatimService`)**
+  - Symfony HttpClient integration querying Nominatim API (`https://nominatim.openstreetmap.org/search` & `/reverse`).
+  - Strict compliance with OpenStreetMap Nominatim Usage Policy (custom `User-Agent: SafarCar-Morocco-PFE/1.0`, `Accept: application/json`).
+  - Cache layer (`CacheInterface`, TTL 30 days) to prevent redundant queries and avoid 429 rate limits.
+  - Zero-downtime offline fallback dictionary for major Moroccan road hubs (Agadir, Marrakech, Casablanca, Rabat, Essaouira, Chichaoua, Tanger, Fès, Meknès...).
+  - Structured DTO `GeocodingResult` and 5 unit tests with 39 assertions passing (`tests/Unit/NominatimServiceTest.php`).
 - [ ] **T-402: OSRM Routing Service (`OsrmService`)**
   - Call OSRM API (`/route/v1/driving/`) with stop sequences.
   - Retrieve accurate road distance in kilometers, estimated duration, and GeoJSON polyline.
