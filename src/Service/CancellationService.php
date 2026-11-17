@@ -14,6 +14,8 @@ use App\Repository\BookingRepository;
 use App\Repository\TripSegmentRepository;
 use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Service orchestrating distinct passenger and driver cancellation policies (T-203).
@@ -35,11 +37,15 @@ final class CancellationService
     public const FULL_REFUND_RATIO = 1.0;
     public const LATE_REFUND_RATIO = 0.5;
 
+    private readonly LoggerInterface $logger;
+
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TripSegmentRepository $segmentRepository,
         private readonly BookingRepository $bookingRepository,
+        ?LoggerInterface $logger = null,
     ) {
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -134,12 +140,19 @@ final class CancellationService
             $refundData,
             $now
         ): Booking {
-            // A. Lock and refresh the Trip
+            // A. Lock and refresh the Booking & Trip
+            $em->lock($booking, LockMode::PESSIMISTIC_WRITE);
+            $em->refresh($booking);
+
             $em->lock($trip, LockMode::PESSIMISTIC_WRITE);
             $em->refresh($trip);
 
+            if ($booking->getStatus() !== BookingStatus::CONFIRMED) {
+                throw new CancellationNotAllowedException('Cette réservation a déjà été annulée.');
+            }
+
             if ($trip->getStatus() !== TripStatus::SCHEDULED) {
-                throw new CancellationNotAllowedException('Le trajet a été modifié ou annulé entre-temps.');
+                throw new CancellationNotAllowedException('Le trajet associé a été modifié ou annulé entre-temps.');
             }
 
             // B. Lock and refresh consecutive segments in monotonic segmentOrder ASC
@@ -166,6 +179,13 @@ final class CancellationService
             $booking->setStatus(BookingStatus::CANCELLED_PASSENGER);
             $booking->setRefundAmount($refundData['refundAmount']);
             $booking->setCancelledAt($now);
+
+            $this->logger->info('Booking cancelled by passenger', [
+                'booking_id' => $booking->getId(),
+                'passenger_id' => $booking->getPassenger()?->getId(),
+                'refund_amount' => $refundData['refundAmount'],
+                'ratio' => $refundData['ratio'],
+            ]);
 
             $em->flush();
 
@@ -224,12 +244,42 @@ final class CancellationService
             $totalRefunded = 0;
 
             foreach ($confirmedBookings as $booking) {
+                $em->lock($booking, LockMode::PESSIMISTIC_WRITE);
+                $em->refresh($booking);
+
+                if ($booking->getStatus() !== BookingStatus::CONFIRMED) {
+                    continue;
+                }
+
+                $boardingStop = $booking->getBoardingStop();
+                $alightingStop = $booking->getAlightingStop();
+
+                if ($boardingStop !== null && $alightingStop !== null) {
+                    $segments = $this->segmentRepository->findBetweenStopOrders(
+                        $trip,
+                        $boardingStop->getStopOrder(),
+                        $alightingStop->getStopOrder(),
+                        lockForUpdate: true
+                    );
+
+                    foreach ($segments as $segment) {
+                        $segment->setAvailableSeats($segment->getAvailableSeats() + ($booking->getSeatsBooked() ?? 0));
+                    }
+                }
+
                 $refund = $booking->getTotalPrice() ?? 0;
                 $booking->setStatus(BookingStatus::CANCELLED_DRIVER);
                 $booking->setRefundAmount($refund);
                 $booking->setCancelledAt($now);
 
                 $totalRefunded += $refund;
+
+                $this->logger->info('Booking cancelled due to driver trip cancellation', [
+                    'trip_id' => $trip->getId(),
+                    'booking_id' => $booking->getId(),
+                    'passenger_email' => $booking->getPassenger()?->getEmail(),
+                    'refund_amount' => $refund,
+                ]);
             }
 
             $em->flush();

@@ -117,7 +117,7 @@ flowchart LR
 - [x] **T-203: Distinct Cancellation Policies**
   - **Passenger Cancellation**: Immediate seat release across booked segments, update status to `CANCELLED_PASSENGER`. Implement threshold rules (>24h: 100% refund, <24h: 50%).
   - **Driver Cancellation**: Cascading cancellation of all related passenger bookings with status `CANCELLED_DRIVER` and notifications.
-- [ ] **T-204: Review Eligibility Guardrails**
+- [x] **T-204: Review Eligibility Guardrails**
   - Enforce prerequisite conditions: Trip must be `COMPLETED`, booking must be `CONFIRMED`, and limit to 1 review per participant per trip.
 - [ ] **T-205: Automated Test Suite with PHPUnit (`tests/`)**
   - `SegmentOverlapTest`: Unit test validating available seat calculations across multi-leg journeys.

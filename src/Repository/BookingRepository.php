@@ -35,6 +35,25 @@ class BookingRepository extends ServiceEntityRepository
     }
 
     /**
+     * Checks if a passenger has an active confirmed booking on the given trip.
+     */
+    public function hasConfirmedBooking(User $passenger, Trip $trip): bool
+    {
+        $count = (int) $this->createQueryBuilder('b')
+            ->select('COUNT(b.id)')
+            ->where('b.passenger = :passenger')
+            ->andWhere('b.trip = :trip')
+            ->andWhere('b.status = :status')
+            ->setParameter('passenger', $passenger)
+            ->setParameter('trip', $trip)
+            ->setParameter('status', BookingStatus::CONFIRMED)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $count > 0;
+    }
+
+    /**
      * @return Booking[]
      */
     public function findConfirmedByPassenger(User $passenger): array
