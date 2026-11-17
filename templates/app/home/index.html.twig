@@ -1,71 +1,721 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}SafarCar — Covoiturage Régional au Maroc{% endblock %}
+{% block title %}SafarCar Maroc — Covoiturage Régional Haut de Gamme{% endblock %}
 
 {% block body %}
-<!-- Hero & Search Section -->
-<section class="bg-gradient-to-b from-brand-50 to-white py-16 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
-    <div class="max-w-4xl mx-auto text-center">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold mb-4 border border-emerald-200">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Environnement Docker & Symfony 7.4 Opérationnel (Sprint 0 Validé)
+<!-- Hero Section (Forest Green Gradient & Stitch Coastal Highway Background) -->
+<section class="relative pt-12 pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#041a15]">
+    <!-- Background Image: Moroccan Coastal Highway matching Stitch Screen S01 with crystal clarity -->
+    <div class="absolute inset-0 z-0 pointer-events-none">
+        <img src="{{ asset('images/hero-morocco-road.jpg') }}" alt="Route panoramique marocaine" class="w-full h-full object-cover object-[center_35%] filter brightness-[0.82] contrast-[1.05]">
+        <!-- High-clarity Emerald Vignette Overlay (Crystal clear center, dark edges for contrast) -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#031d18]/75 via-[#04241e]/45 to-[#031612]/90"></div>
+    </div>
+
+    <div class="relative max-w-5xl mx-auto text-center z-10">
+        <!-- Top Verified Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-400/40 text-emerald-300 text-xs font-semibold tracking-wider uppercase mb-5 backdrop-blur-md shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+            <span class="text-amber-400">✦</span>
+            <span>RÉSEAU CERTIFIÉ HAUT DE GAMME : AGADIR • MARRAKECH • CASABLANCA</span>
+            <span class="text-amber-400">✦</span>
         </div>
         
-        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
-            Voyagez entre les villes marocaines au <span class="text-brand-600">juste prix</span>
+        <!-- Main Hero Heading with crisp drop-shadow -->
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight max-w-4xl mx-auto drop-shadow-[0_3px_10px_rgba(0,0,0,0.75)]">
+            Voyagez autrement à travers le Maroc
         </h1>
-        <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-            Plateforme de covoiturage régional avec gestion intelligente des sous-tronçons et étapes intermédiaires (Agadir, Marrakech, Essaouira, Casablanca...).
+        
+        <!-- Hero Subtitle with contrast shadow -->
+        <p class="mt-4 text-sm sm:text-base lg:text-lg text-emerald-50 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
+            Liaisons interurbaines haut de gamme, conducteurs rigoureusement certifiés CNI & Permis, et confort absolu garanti sur chaque trajet.
         </p>
 
-        <!-- Search Box (Hero Screen #1 Preview) -->
-        <div class="mt-8 bg-white p-4 sm:p-6 rounded-2xl shadow-xl border border-slate-200 text-left">
-            <form action="{{ path('app_home') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Départ</label>
-                    <input type="text" name="origin" placeholder="Ex: Agadir" value="Agadir" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <!-- Floating Search Box (Matching Stitch Screen S01) -->
+        <div class="mt-8 bg-white/98 backdrop-blur-md rounded-2xl shadow-[0_20px_45px_rgba(0,0,0,0.35)] p-3 sm:p-4 border border-white/60 text-left">
+            <form id="hero-search-form" action="{{ path('app_home') }}" method="GET" class="flex flex-col lg:flex-row items-stretch gap-2">
+                <!-- DÉPART -->
+                <div class="flex-1 bg-slate-50 hover:bg-slate-100/80 rounded-xl px-4 py-2.5 border border-slate-200 transition focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">DÉPART</label>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <svg class="w-4 h-4 text-brand-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <input type="text" id="origin-input" name="origin" value="{{ criteria.origin|default('Agadir') }}" placeholder="Ville de départ" list="cities-list" class="w-full bg-transparent text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none">
+                    </div>
                 </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Destination</label>
-                    <input type="text" name="destination" placeholder="Ex: Marrakech" value="Marrakech" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Date</label>
-                    <input type="date" name="date" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-                </div>
-
-                <div class="flex items-end">
-                    <button type="button" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-medium py-2.5 px-4 rounded-lg text-sm transition shadow-sm flex items-center justify-center gap-2">
-                        <span>🔍</span>
-                        <span>Rechercher</span>
+                <!-- Swap Button -->
+                <div class="hidden lg:flex items-center justify-center">
+                    <button type="button" id="swap-cities-btn" title="Inverser départ et arrivée" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-500 flex items-center justify-center border border-slate-200 transition hover:rotate-180 transform duration-300">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        </svg>
                     </button>
                 </div>
+
+                <!-- ARRIVÉE -->
+                <div class="flex-1 bg-slate-50 hover:bg-slate-100/80 rounded-xl px-4 py-2.5 border border-slate-200 transition focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">ARRIVÉE</label>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <svg class="w-4 h-4 text-rose-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <input type="text" id="destination-input" name="destination" value="{{ criteria.destination|default('Marrakech') }}" placeholder="Ville de destination" list="cities-list" class="w-full bg-transparent text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- DATE -->
+                <div class="w-full lg:w-44 bg-slate-50 hover:bg-slate-100/80 rounded-xl px-4 py-2.5 border border-slate-200 transition focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">DATE</label>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <input type="date" name="date" value="{{ criteria.date }}" class="w-full bg-transparent text-sm font-semibold text-slate-800 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- PASSAGERS -->
+                <div class="w-full lg:w-36 bg-slate-50 hover:bg-slate-100/80 rounded-xl px-4 py-2.5 border border-slate-200 transition focus-within:ring-2 focus-within:ring-brand-500 focus-within:bg-white">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">PASSAGERS</label>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        <select name="seats" class="w-full bg-transparent text-sm font-semibold text-slate-800 focus:outline-none cursor-pointer">
+                            <option value="1" {% if criteria.seats == 1 %}selected{% endif %}>1 passager</option>
+                            <option value="2" {% if criteria.seats == 2 %}selected{% endif %}>2 passagers</option>
+                            <option value="3" {% if criteria.seats == 3 %}selected{% endif %}>3 passagers</option>
+                            <option value="4" {% if criteria.seats == 4 %}selected{% endif %}>4 passagers</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <button type="submit" class="w-full lg:w-auto px-7 py-3.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-900/20 hover:shadow-brand-900/30 transition flex items-center justify-center gap-2 flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <span>Rechercher</span>
+                </button>
             </form>
+        </div>
+
+        <!-- Moroccan Cities Datalist -->
+        <datalist id="cities-list">
+            {% for city in allCities %}
+                <option value="{{ city.name }}"></option>
+            {% endfor %}
+        </datalist>
+
+        <!-- Trajets Populaires Pills (Matching Stitch Screen S01) -->
+        <div class="mt-5 flex flex-wrap items-center justify-center gap-2.5 text-xs text-white">
+            <span class="font-bold text-amber-300 flex items-center gap-1 drop-shadow-sm">
+                <span>🔥</span> Trajets populaires :
+            </span>
+            {% for p in popularPills %}
+                <a href="{{ path('app_home', {origin: p.from, destination: p.to}) }}" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 hover:bg-black/60 border border-white/20 text-white transition backdrop-blur-md shadow-sm hover:scale-105 transform duration-150">
+                    <span class="font-medium">{{ p.from }} ⇄ {{ p.to }}</span>
+                    <span class="font-extrabold text-emerald-400">{{ p.price }} DH</span>
+                </a>
+            {% endfor %}
         </div>
     </div>
 </section>
 
-<!-- Popular Routes -->
-<section class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <h2 class="text-xl font-bold text-slate-900 mb-6">Trajets régionaux fréquents</h2>
-    
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {% for route in popularRoutes %}
-            <div class="bg-white p-5 rounded-xl border border-slate-200 hover:shadow-md transition">
-                <div class="flex justify-between items-start mb-3">
-                    <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded font-medium">{{ route.duration }}</span>
-                    <span class="text-lg font-bold text-brand-600">{{ route.price }} MAD</span>
+<!-- Trust & Quality Metrics Bar (Floating Card) -->
+<div class="max-w-6xl mx-auto px-4 -mt-10 relative z-20">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-4 sm:p-6 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
+        <!-- 15 000+ Trajets -->
+        <div class="flex items-center gap-3 sm:px-3 pt-3 sm:pt-0">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                </svg>
+            </div>
+            <div>
+                <div class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">15 000+</div>
+                <div class="text-xs text-slate-500 font-medium">Trajets partagés</div>
+            </div>
+        </div>
+
+        <!-- 4.9 / 5 Note -->
+        <div class="flex items-center gap-3 sm:px-3 pt-3 sm:pt-0">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">4.9 <span class="text-xs font-normal text-slate-400">/ 5</span></div>
+                <div class="text-xs text-slate-500 font-medium">Note moyenne voyageurs</div>
+            </div>
+        </div>
+
+        <!-- 100% CNI Vérifiée -->
+        <div class="flex items-center gap-3 sm:px-3 pt-3 sm:pt-0">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">100%</div>
+                <div class="text-xs text-slate-500 font-medium">Vérifiés CNI & Permis</div>
+            </div>
+        </div>
+
+        <!-- 0 DH Frais cachés -->
+        <div class="flex items-center gap-3 sm:px-3 pt-3 sm:pt-0">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">0 DH</div>
+                <div class="text-xs text-slate-500 font-medium">Frais cachés ou surprises</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Search Experience (Filters Sidebar + Departure Cards) -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left Column: Filters Sidebar (Screen S01) -->
+        <aside class="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm sticky top-24">
+            <form id="filters-form" action="{{ path('app_home') }}" method="GET" class="space-y-6">
+                <!-- Keep search inputs in sync -->
+                <input type="hidden" name="origin" value="{{ criteria.origin }}">
+                <input type="hidden" name="destination" value="{{ criteria.destination }}">
+                <input type="hidden" name="date" value="{{ criteria.date }}">
+                <input type="hidden" name="seats" value="{{ criteria.seats }}">
+                <input type="hidden" name="sort" value="{{ criteria.sort }}">
+
+                <!-- Header -->
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+                        </svg>
+                        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Filtres de recherche</h2>
+                    </div>
+                    <a href="{{ path('app_home', {origin: criteria.origin, destination: criteria.destination}) }}" class="text-xs text-brand-600 hover:text-brand-700 font-semibold hover:underline">
+                        Réinitialiser
+                    </a>
                 </div>
-                <div class="text-sm font-semibold text-slate-800">
-                    {{ route.from }} → {{ route.to }}
+
+                <!-- 1. Plages Horaires de Départ -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2.5">
+                        Plages horaires de départ
+                    </label>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <!-- Matin -->
+                        <label class="flex items-start gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-brand-500 cursor-pointer transition has-[:checked]:bg-emerald-50/60 has-[:checked]:border-brand-500">
+                            <input type="checkbox" name="time_slots[]" value="morning" {% if 'morning' in criteria.time_slots %}checked{% endif %} class="mt-0.5 rounded text-brand-600 focus:ring-brand-500">
+                            <div>
+                                <div class="font-bold text-slate-800">Matin</div>
+                                <div class="text-[10px] text-slate-500">06:00 – 12:00</div>
+                            </div>
+                        </label>
+
+                        <!-- Après-midi -->
+                        <label class="flex items-start gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-brand-500 cursor-pointer transition has-[:checked]:bg-emerald-50/60 has-[:checked]:border-brand-500">
+                            <input type="checkbox" name="time_slots[]" value="afternoon" {% if 'afternoon' in criteria.time_slots %}checked{% endif %} class="mt-0.5 rounded text-brand-600 focus:ring-brand-500">
+                            <div>
+                                <div class="font-bold text-slate-800">Après-midi</div>
+                                <div class="text-[10px] text-slate-500">12:00 – 18:00</div>
+                            </div>
+                        </label>
+
+                        <!-- Soirée -->
+                        <label class="flex items-start gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-brand-500 cursor-pointer transition has-[:checked]:bg-emerald-50/60 has-[:checked]:border-brand-500">
+                            <input type="checkbox" name="time_slots[]" value="evening" {% if 'evening' in criteria.time_slots %}checked{% endif %} class="mt-0.5 rounded text-brand-600 focus:ring-brand-500">
+                            <div>
+                                <div class="font-bold text-slate-800">Soirée</div>
+                                <div class="text-[10px] text-slate-500">18:00 – 22:00</div>
+                            </div>
+                        </label>
+
+                        <!-- Nuit -->
+                        <label class="flex items-start gap-2 p-2.5 rounded-xl border border-slate-200 hover:border-brand-500 cursor-pointer transition has-[:checked]:bg-emerald-50/60 has-[:checked]:border-brand-500">
+                            <input type="checkbox" name="time_slots[]" value="night" {% if 'night' in criteria.time_slots %}checked{% endif %} class="mt-0.5 rounded text-brand-600 focus:ring-brand-500">
+                            <div>
+                                <div class="font-bold text-slate-800">Nuit</div>
+                                <div class="text-[10px] text-slate-500">22:00 – 06:00</div>
+                            </div>
+                        </label>
+                    </div>
                 </div>
-                <div class="text-xs text-slate-400 mt-1">
-                    Via étapes régionales
+
+                <!-- 2. Prix Max par Place -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                            Prix max par place
+                        </label>
+                        <span id="price-display-val" class="text-xs font-extrabold text-brand-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                            {{ criteria.max_price|default(180) }} DH
+                        </span>
+                    </div>
+                    <input type="range" id="price-range-slider" name="max_price" min="40" max="250" step="5" value="{{ criteria.max_price|default(180) }}" class="w-full accent-brand-600 cursor-pointer">
+                    <div class="flex justify-between text-[10px] text-slate-400 mt-1 font-medium">
+                        <span>40 DH</span>
+                        <span>145 DH</span>
+                        <span>250 DH</span>
+                    </div>
+                </div>
+
+                <!-- 3. Confort & Préférences -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2.5">
+                        Confort & Préférences
+                    </label>
+                    <div class="space-y-2.5 text-xs text-slate-700">
+                        <label class="flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" name="ac" value="1" {% if criteria.ac %}checked{% endif %} class="rounded text-brand-600 focus:ring-brand-500">
+                            <span class="flex items-center gap-1.5">
+                                <span>❄️</span> Climatisation active
+                            </span>
+                        </label>
+                        <label class="flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" name="luggage" value="1" {% if criteria.luggage %}checked{% endif %} class="rounded text-brand-600 focus:ring-brand-500">
+                            <span class="flex items-center gap-1.5">
+                                <span>🧳</span> Grand coffre pour bagages
+                            </span>
+                        </label>
+                        <label class="flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" name="max_two_back" value="1" checked class="rounded text-brand-600 focus:ring-brand-500">
+                            <span class="flex items-center gap-1.5">
+                                <span>👥</span> Max 2 passagers à l'arrière
+                            </span>
+                        </label>
+                        <label class="flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" name="no_smoking" value="1" checked class="rounded text-brand-600 focus:ring-brand-500">
+                            <span class="flex items-center gap-1.5">
+                                <span>🚭</span> Véhicule non-fumeur
+                            </span>
+                        </label>
+                        <label class="flex items-center gap-2.5 cursor-pointer">
+                            <input type="checkbox" name="women_only" value="1" class="rounded text-brand-600 focus:ring-brand-500">
+                            <span class="flex items-center gap-1.5">
+                                <span>🌸</span> Femmes uniquement (conductrice)
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 4. Direct Express Toggle -->
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                    <label class="flex items-center justify-between cursor-pointer">
+                        <div>
+                            <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                                <span class="text-brand-600">✦</span> Direct Express (Autoroute)
+                            </div>
+                            <div class="text-[10px] text-slate-500">Sans détours ni arrêts en ville</div>
+                        </div>
+                        <input type="checkbox" name="direct" value="1" {% if criteria.direct %}checked{% endif %} class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500">
+                    </label>
+                </div>
+
+                <!-- Submit Filter Button -->
+                <button type="submit" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition shadow-sm flex items-center justify-center gap-2">
+                    <span>Appliquer les filtres</span>
+                </button>
+            </form>
+        </aside>
+
+        <!-- Right Column: Results Section (Screen S01) -->
+        <main class="lg:col-span-8 space-y-4">
+            
+            <!-- Results Header Bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <h2 class="text-base font-extrabold text-slate-900">
+                        {{ results|length }} départs disponibles
+                    </h2>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        {{ criteria.origin }} → {{ criteria.destination }}
+                    </span>
+                </div>
+
+                <!-- Sort Dropdown -->
+                <div class="flex items-center gap-2 text-xs">
+                    <label for="sort-select" class="text-slate-500 font-medium">Trier :</label>
+                    <select id="sort-select" onchange="document.querySelector('#filters-form input[name=sort]').value = this.value; document.getElementById('filters-form').submit();" class="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer">
+                        <option value="earliest" {% if criteria.sort == 'earliest' %}selected{% endif %}>Départ le plus tôt</option>
+                        <option value="cheapest" {% if criteria.sort == 'cheapest' %}selected{% endif %}>Prix le plus bas</option>
+                        <option value="rating" {% if criteria.sort == 'rating' %}selected{% endif %}>Conducteurs les mieux notés</option>
+                    </select>
                 </div>
             </div>
-        {% endfor %}
+
+            <!-- List of Trip Cards -->
+            {% if results is not empty %}
+                <div class="space-y-4">
+                    {% for item in results %}
+                        {% set trip = item.trip %}
+                        {% set bStop = item.boardingStop %}
+                        {% set aStop = item.alightingStop %}
+                        {% set dStats = item.driverStats %}
+                        
+                        <div class="bg-white rounded-2xl border border-slate-200 hover:border-brand-300 hover:shadow-lg transition-all duration-200 p-5 group">
+                            
+                            <!-- Top Badge Row -->
+                            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-slate-100 text-xs">
+                                <span class="inline-flex items-center gap-1.5 font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full text-[11px]">
+                                    {{ item.tagBadge }}
+                                </span>
+
+                                {% if item.isLastSeat %}
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[11px] animate-pulse">
+                                        <span>🔥</span> Dernière place disponible !
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-[11px]">
+                                        <span>✓</span> {{ item.availableSeats }} places restantes
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Main Card Content: Timeline + Pricing -->
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                                
+                                <!-- Timeline (8 cols on desktop) -->
+                                <div class="md:col-span-8 space-y-4">
+                                    
+                                    <!-- Boarding Stop -->
+                                    <div class="flex items-start gap-3">
+                                        <div class="flex flex-col items-center flex-shrink-0">
+                                            <span class="w-3.5 h-3.5 rounded-full border-2 border-emerald-600 bg-white"></span>
+                                            <span class="w-0.5 h-10 bg-slate-200 my-0.5"></span>
+                                        </div>
+                                        <div class="flex-1 -mt-0.5">
+                                            <div class="flex items-baseline gap-2">
+                                                <span class="text-base font-extrabold text-slate-900">
+                                                    {{ bStop.estimatedArrivalAt ? bStop.estimatedArrivalAt|date('H:i') : trip.departureAt|date('H:i') }}
+                                                </span>
+                                                <span class="text-sm font-bold text-slate-800">{{ bStop.city.name }}</span>
+                                            </div>
+                                            <div class="text-xs text-slate-500 font-medium">
+                                                {{ bStop.meetingPoint|default('Point de rendez-vous convenu') }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Intermediate Stops (if any) -->
+                                    {% if item.intermediateStops is not empty %}
+                                        {% for iStop in item.intermediateStops %}
+                                            <div class="flex items-start gap-3 -mt-2">
+                                                <div class="flex flex-col items-center flex-shrink-0">
+                                                    <span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+                                                    <span class="w-0.5 h-8 bg-slate-200 my-0.5"></span>
+                                                </div>
+                                                <div class="flex-1 -mt-1 text-xs text-slate-600">
+                                                    <span class="font-semibold text-slate-700">{{ iStop.city.name }}</span>
+                                                    <span class="text-slate-400">• {{ iStop.meetingPoint|default('Étape intermédiaire') }}</span>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    <!-- Alighting Stop -->
+                                    <div class="flex items-start gap-3 -mt-2">
+                                        <div class="flex flex-col items-center flex-shrink-0">
+                                            <span class="w-3.5 h-3.5 rounded-full bg-emerald-600"></span>
+                                        </div>
+                                        <div class="flex-1 -mt-0.5">
+                                            <div class="flex items-baseline gap-2">
+                                                <span class="text-base font-extrabold text-slate-900">
+                                                    {{ aStop.estimatedArrivalAt ? aStop.estimatedArrivalAt|date('H:i') : '12:30' }}
+                                                </span>
+                                                <span class="text-sm font-bold text-slate-800">{{ aStop.city.name }}</span>
+                                            </div>
+                                            <div class="text-xs text-slate-500 font-medium">
+                                                {{ aStop.meetingPoint|default('Dépose gare ou centre-ville') }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pricing & Action CTA (4 cols on desktop) -->
+                                <div class="md:col-span-4 flex flex-col md:items-end justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6">
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">
+                                        Garantie Prix Équitable
+                                    </div>
+                                    <div class="flex items-baseline gap-1 my-1">
+                                        <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ item.subTripPrice }}</span>
+                                        <span class="text-sm font-bold text-brand-600">DH</span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-400 mb-4 text-right">
+                                        par place • Tout compris
+                                    </div>
+
+                                    <a href="{{ path('app_home') }}#booking-demo" class="w-full text-center px-4 py-2.5 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white font-bold text-xs rounded-xl shadow-md shadow-brand-700/20 transition flex items-center justify-center gap-1.5 group-hover:scale-[1.02] transform duration-150">
+                                        <span>Réserver ma place</span>
+                                        <svg class="w-3.5 h-3.5 transition group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Row: Driver & Vehicle Info -->
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+                                
+                                <!-- Driver Profile -->
+                                <div class="flex items-center gap-3">
+                                    <!-- Avatar -->
+                                    <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 font-extrabold flex items-center justify-center text-xs border border-emerald-300">
+                                        {{ trip.driver.firstName|slice(0, 1) }}{{ trip.driver.lastName|slice(0, 1) }}
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-slate-900">{{ trip.driver.firstName }} {{ trip.driver.lastName|slice(0, 1) }}.</span>
+                                            <span class="inline-flex items-center text-amber-500 font-bold text-[11px]">
+                                                ★ {{ dStats.average ? dStats.average|number_format(1) : '4.9' }}
+                                                <span class="text-slate-400 font-normal ml-0.5">({{ dStats.count ? dStats.count : '12' }} avis)</span>
+                                            </span>
+                                            {% if item.isSuperDriver %}
+                                                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                    SUPER CONDUCTEUR
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                        {% if trip.vehicle %}
+                                            <div class="text-[11px] text-slate-500">
+                                                {{ trip.vehicle.brand }} {{ trip.vehicle.model }} • {{ trip.vehicle.color }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Feature Pills -->
+                                <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+                                    {% if trip.vehicle and trip.vehicle.isAirConditioned %}
+                                        <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">Clim active</span>
+                                    {% endif %}
+                                    <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">Max 2 arrière</span>
+                                    {% if trip.isLuggageAllowed %}
+                                        <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">Bagage cabine</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Show more pagination button -->
+                    <div class="text-center pt-4">
+                        <button type="button" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 shadow-sm transition">
+                            <span>Afficher d'autres départs disponibles</span>
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Fallback / No direct match state -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-8 text-center shadow-sm">
+                    <div class="w-12 h-12 rounded-full bg-amber-50 text-amber-500 mx-auto flex items-center justify-center text-xl mb-3">
+                        🔍
+                    </div>
+                    <h3 class="text-base font-extrabold text-slate-900 mb-1">Aucun départ exact trouvé pour cette requête</h3>
+                    <p class="text-xs text-slate-500 max-w-md mx-auto mb-6">
+                        Essayez de réinitialiser vos filtres ou de consulter les trajets à proximité. SafarCar dessert toutes les étapes régionales !
+                    </p>
+                    <a href="{{ path('app_home') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl transition">
+                        <span>Voir tous les départs disponibles</span>
+                    </a>
+                </div>
+            {% endif %}
+
+        </main>
     </div>
 </section>
+
+<!-- "Pourquoi choisir SafarCar ?" Section (Screen S01) -->
+<section class="bg-gradient-to-b from-white to-slate-50/80 py-16 px-4 sm:px-6 lg:px-8 border-t border-slate-100">
+    <div class="max-w-6xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold uppercase tracking-wider mb-3">
+                <span>✦</span> L'EXPÉRIENCE SAFARCAR MAROC
+            </div>
+            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+                Pourquoi choisir SafarCar ?
+            </h2>
+            <p class="mt-3 text-sm text-slate-600">
+                Une exigence sans compromis sur la ponctualité, le respect et la sécurité routière marocaine.
+            </p>
+        </div>
+
+        <!-- 3 Value Proposition Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card 1: Confort & Sérénité -->
+            <div class="bg-white p-7 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-5">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-extrabold text-slate-900 mb-2">Confort & Sérénité</h3>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    Voyagez l'esprit tranquille : maximum 2 passagers sur la banquette arrière, climatisation systématique et véhicules récents inspectés.
+                </p>
+                <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700">
+                    <span class="text-emerald-500">✓</span> Espace personnel respecté
+                </div>
+            </div>
+
+            <!-- Card 2: Sécurité Maximale -->
+            <div class="bg-white p-7 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-5">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-extrabold text-slate-900 mb-2">Sécurité Maximale</h3>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    Vérification humaine et obligatoire de la CNI marocaine, du permis de conduire et de l'assurance valide conforme aux directives CNDP.
+                </p>
+                <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700">
+                    <span class="text-emerald-500">✓</span> Identité certifiée à 100%
+                </div>
+            </div>
+
+            <!-- Card 3: Paiement & Flexibilité -->
+            <div class="bg-white p-7 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-5">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-extrabold text-slate-900 mb-2">Paiement & Flexibilité</h3>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    Réglez en ligne par carte marocaine CMI sécurisée ou en espèces au départ. Annulation gratuite et remboursement instantané jusqu'à H-24.
+                </p>
+                <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700">
+                    <span class="text-emerald-500">✓</span> Zéro frais cachés
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- "Ce que disent nos voyageurs" Testimonials Section (Screen S01) -->
+<section class="py-16 px-4 sm:px-6 lg:px-8 bg-slate-50/50 border-t border-slate-200/60">
+    <div class="max-w-6xl mx-auto">
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-10 gap-4">
+            <div>
+                <div class="text-[11px] font-extrabold text-brand-700 uppercase tracking-wider mb-1">
+                    AVIS VÉRIFIÉS DE NOTRE COMMUNAUTÉ
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    Ce que disent nos voyageurs
+                </h2>
+            </div>
+            <div class="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                <span class="text-amber-500 text-sm">★★★★★</span>
+                <span class="font-extrabold text-slate-900">4.9/5</span>
+                <span class="text-slate-400">sur plus de 3 500 évaluations</span>
+            </div>
+        </div>
+
+        <!-- 3 Testimonial Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Review 1: Salma L. -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="text-amber-500 text-xs mb-3">★★★★★</div>
+                    <p class="text-xs text-slate-600 leading-relaxed italic mb-6">
+                        « Un trajet Agadir - Marrakech d'une sérénité absolue. Mehdi conduit très prudemment sur l'autoroute, la voiture sentait bon et seulement 2 personnes à l'arrière. Rien à voir avec les taxis collectifs classiques ! »
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 pt-3 border-t border-slate-100">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-extrabold flex items-center justify-center text-xs">
+                        SL
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-900">Salma L.</div>
+                        <div class="text-[10px] text-slate-400">Trajet Agadir → Marrakech</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 2: Omar T. -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="text-amber-500 text-xs mb-3">★★★★★</div>
+                    <p class="text-xs text-slate-600 leading-relaxed italic mb-6">
+                        « Le fait que chaque conducteur doive envoyer sa CNI et son permis donne une vraie confiance pour les trajets professionnels entre Casa et Marrakech. Ponctuel à la minute près. »
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 pt-3 border-t border-slate-100">
+                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-extrabold flex items-center justify-center text-xs">
+                        OT
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-900">Omar T.</div>
+                        <div class="text-[10px] text-slate-400">Trajet Marrakech → Casablanca</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review 3: Houda S. -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="text-amber-500 text-xs mb-3">★★★★★</div>
+                    <p class="text-xs text-slate-600 leading-relaxed italic mb-6">
+                        « Réservation ultra simple pour l'étape à Essaouira. Karim a été très courtois et nous a même conseillé les meilleurs arrêts pour le thé. Plateforme marocaine que je recommande à 100%. »
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 pt-3 border-t border-slate-100">
+                    <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 font-extrabold flex items-center justify-center text-xs">
+                        HS
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-slate-900">Houda S.</div>
+                        <div class="text-[10px] text-slate-400">Trajet Agadir → Essaouira</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Client-side Script for City Swap and Dynamic Slider -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // City Swap button
+        const swapBtn = document.getElementById('swap-cities-btn');
+        const originInput = document.getElementById('origin-input');
+        const destinationInput = document.getElementById('destination-input');
+
+        if (swapBtn && originInput && destinationInput) {
+            swapBtn.addEventListener('click', function() {
+                const temp = originInput.value;
+                originInput.value = destinationInput.value;
+                destinationInput.value = temp;
+            });
+        }
+
+        // Price range slider sync
+        const priceSlider = document.getElementById('price-range-slider');
+        const priceDisplay = document.getElementById('price-display-val');
+
+        if (priceSlider && priceDisplay) {
+            priceSlider.addEventListener('input', function() {
+                priceDisplay.textContent = this.value + ' DH';
+            });
+        }
+    });
+</script>
 {% endblock %}

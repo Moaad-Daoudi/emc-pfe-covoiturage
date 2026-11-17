@@ -21,10 +21,17 @@
 - [x] Automated test suite with PHPUnit (`tests/`) (T-205).
 
 ## Sprint 3: Level 3 — Product & 11 UI Screens
-- [ ] Security: 2 Technical Roles (`ROLE_USER`, `ROLE_ADMIN`) + contextual Symfony Voters.
-- [ ] Passenger Flow (Unified Search, Details & Segment Booking, Checkout, Bookings Dashboard).
-- [ ] Driver Flow (Trip publication with dynamic Stimulus stops, Dashboard, Manifest).
-- [ ] Public Profiles, Reviews, and 1-Click Demo Login box.
+- [x] T-301: Base Layout & Design System (`templates/base.html.twig`, Tailwind emerald/forest palette, Plus Jakarta Sans, navbar, footer).
+- [x] T-302: Screen S01 — Home & Search Experience (`/`) matching Stitch AI prototype (Hero, trust metrics bar, filter sidebar, sub-segment search cards, value props, testimonials).
+- [ ] T-303: Screen S02 — Trip Details & Segment Booking (`/trips/{id}`).
+- [ ] T-304: Screen S03 — Simulated Checkout (`/bookings/{id}/checkout`).
+- [ ] T-305: Screen S04 — Passenger Dashboard (`/my/bookings`).
+- [ ] T-306: Screen S05 — Publish a Trip (`/driver/trips/new`).
+- [ ] T-307: Screens S06 & S07 — Driver Space & Manifest (`/driver/trips`).
+- [ ] T-308: Screens S08 & S09 — Public Profiles & Review System (`/users/{id}`, `/trips/{id}/review`).
+- [ ] T-309: Screen S10 — Account & Vehicle Management (`/account`).
+- [ ] T-310: Screen S11 — Admin Moderation Dashboard.
+- [ ] T-311: Demo Switcher Component (1-click login as Amina, Karim, Youssef, Admin).
 
 ## Sprint 4: Level 4 — OSRM & Nominatim External APIs
 - [ ] `NominatimService` with caching.

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Domain\Enum\TripStatus;
 use App\Entity\Trip;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,28 +17,24 @@ class TripRepository extends ServiceEntityRepository
         parent::__construct($registry, Trip::class);
     }
 
-//    /**
-//     * @return Trip[] Returns an array of Trip objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Trip
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Trip[]
+     */
+    public function findScheduledTripsWithDetails(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('s', 'seg', 'd', 'v', 'dc', 'ac', 'sc')
+            ->leftJoin('t.stops', 's')
+            ->leftJoin('s.city', 'sc')
+            ->leftJoin('t.segments', 'seg')
+            ->leftJoin('t.driver', 'd')
+            ->leftJoin('t.vehicle', 'v')
+            ->leftJoin('t.departureCity', 'dc')
+            ->leftJoin('t.arrivalCity', 'ac')
+            ->where('t.status = :status')
+            ->setParameter('status', TripStatus::SCHEDULED)
+            ->orderBy('t.departureAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

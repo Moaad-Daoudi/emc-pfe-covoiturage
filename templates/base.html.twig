@@ -3,21 +3,40 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}SafarCar — Covoiturage Régional{% endblock %}</title>
+        <title>{% block title %}SafarCar Maroc — Covoiturage Régional Haut de Gamme{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🚗</text></svg>">
         
-        <!-- Tailwind CSS -->
+        <!-- Google Fonts: Plus Jakarta Sans -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+        <!-- Tailwind CSS via CDN with customized Stitch palette -->
         <script src="https://cdn.tailwindcss.com"></script>
         <script>
             tailwind.config = {
                 theme: {
                     extend: {
+                        fontFamily: {
+                            sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                        },
                         colors: {
                             brand: {
-                                50: '#eff6ff',
-                                500: '#0284c7',
-                                600: '#0369a1',
-                                700: '#075985',
+                                50: '#f0fdf9',
+                                100: '#ccfbf1',
+                                200: '#99f6e4',
+                                300: '#5eead4',
+                                400: '#2dd4bf',
+                                500: '#14b8a6',
+                                600: '#0d9488',
+                                700: '#0f766e',
+                                800: '#115e59',
+                                900: '#134e4a',
+                                950: '#042f2e',
+                            },
+                            forest: {
+                                900: '#06231e',
+                                950: '#031714',
                             }
                         }
                     }
@@ -25,50 +44,176 @@
             }
         </script>
 
-        {% block stylesheets %}
-        {% endblock %}
+        <style>
+            [x-cloak] { display: none !important; }
+        </style>
+
+        {% block stylesheets %}{% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body class="min-h-full flex flex-col font-sans antialiased">
-        <!-- Navigation Header -->
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <body class="min-h-full flex flex-col font-sans antialiased text-slate-800 bg-[#f8fafc]">
+        
+        <!-- Top Navigation Bar -->
+        <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 transition-all">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                <a href="{{ path('app_home') }}" class="flex items-center gap-2 font-bold text-xl text-brand-600">
-                    <span class="text-2xl">🚗</span>
-                    <span>SafarCar</span>
-                    <span class="text-xs bg-brand-50 text-brand-700 px-2 py-0.5 rounded-full border border-brand-200 font-medium">EMC 2026</span>
-                </a>
+                
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-8">
+                    <a href="{{ path('app_home') }}" class="flex items-center gap-2 group">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-700 to-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-brand-500/20 group-hover:scale-105 transition-transform">
+                            S
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="font-extrabold text-xl tracking-tight text-slate-900">Safar<span class="text-brand-600">Car</span></span>
+                            <span class="text-[10px] uppercase font-bold tracking-wider bg-brand-50 text-brand-700 px-2 py-0.5 rounded-full border border-brand-200/60">Maroc</span>
+                        </div>
+                    </a>
 
-                <nav class="flex items-center gap-4 text-sm font-medium">
-                    <a href="{{ path('app_home') }}" class="text-slate-700 hover:text-brand-600 transition">Rechercher</a>
-                    <a href="#publish" class="text-slate-700 hover:text-brand-600 transition">Publier un trajet</a>
+                    <!-- Navigation Links -->
+                    <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+                        <a href="{{ path('app_home') }}" class="px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') == 'app_home' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
+                            Rechercher
+                        </a>
+                        <a href="{{ path('app_home') }}#publish" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                            Publier un trajet
+                        </a>
+                        <a href="{{ path('app_home') }}#bookings" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                            Mes réservations
+                        </a>
+                        <a href="{{ path('app_home') }}#driver" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                            Espace conducteur
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Right Actions & User Profile -->
+                <div class="flex items-center gap-3">
                     {% if app.user %}
                         {% if is_granted('ROLE_ADMIN') %}
-                            <a href="{{ path('admin') }}" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm transition">⚙️ Back-Office</a>
+                            <a href="{{ path('admin') }}" class="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm transition">
+                                <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                <span>Administration</span>
+                            </a>
                         {% endif %}
-                        <span class="text-slate-600 text-xs font-medium">{{ app.user.firstname }}</span>
-                        <a href="{{ path('app_logout') }}" class="text-rose-600 hover:text-rose-700 text-xs transition">Déconnexion</a>
+
+                        <!-- User Profile Pill -->
+                        <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
+                            <div class="w-8 h-8 rounded-full bg-brand-100 border border-brand-300 text-brand-800 font-bold text-xs flex items-center justify-center">
+                                {{ app.user.firstname|first|upper }}{{ app.user.lastname|first|upper }}
+                            </div>
+                            <span class="text-sm font-semibold text-slate-800 hidden sm:inline">{{ app.user.firstname }} {{ app.user.lastname|first }}.</span>
+                            <a href="{{ path('app_logout') }}" title="Déconnexion" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                            </a>
+                        </div>
                     {% else %}
-                        <a href="{{ path('app_login') }}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">Connexion</a>
+                        <!-- Demo 1-Click Login modal helper or Direct Login -->
+                        <a href="{{ path('app_login') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 hover:text-brand-600 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">
+                            Connexion
+                        </a>
+                        <a href="{{ path('app_login') }}" class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-sm shadow-brand-600/20 transition hover:shadow-md">
+                            <span>S'inscrire</span>
+                        </a>
                     {% endif %}
-                </nav>
+                </div>
+
             </div>
         </header>
+
+        <!-- Flash Messages Banner -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 w-full">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="mb-3 p-4 rounded-xl text-sm font-medium flex items-center justify-between border shadow-sm {% if label == 'success' %}bg-emerald-50 text-emerald-800 border-emerald-200{% elseif label == 'danger' or label == 'error' %}bg-rose-50 text-rose-800 border-rose-200{% elseif label == 'warning' %}bg-amber-50 text-amber-800 border-amber-200{% else %}bg-slate-50 text-slate-800 border-slate-200{% endif %}">
+                        <div class="flex items-center gap-2">
+                            {% if label == 'success' %}
+                                <svg class="w-5 h-5 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            {% elseif label == 'warning' %}
+                                <svg class="w-5 h-5 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            {% else %}
+                                <svg class="w-5 h-5 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            {% endif %}
+                            <span>{{ message }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
 
         <!-- Main Content -->
         <main class="flex-1">
             {% block body %}{% endblock %}
         </main>
 
-        <!-- Footer -->
-        <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
-            <div class="max-w-7xl mx-auto px-4">
-                <p>SafarCar — Plateforme de Covoiturage Régional (Sujet 3) • PFE Challenge EMC</p>
-                <p class="mt-1">Symfony 7.4 • PHP 8.3 • MySQL 8.0 • Docker</p>
+        <!-- Footer matching Stitch AI Specification -->
+        <footer class="bg-white border-t border-slate-200 mt-20 pt-12 pb-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-slate-100">
+                    
+                    <div class="space-y-3 md:col-span-1">
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-7 h-7 rounded-lg bg-brand-700 flex items-center justify-center text-white font-bold text-sm">S</div>
+                            <span class="font-extrabold text-lg text-slate-900">Safar<span class="text-brand-600">Car</span></span>
+                            <span class="text-[9px] uppercase font-bold tracking-wider bg-brand-50 text-brand-700 px-1.5 py-0.5 rounded border border-brand-200">Maroc</span>
+                        </div>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Plateforme de covoiturage interurbain certifié au Maroc. Liaisons régionales avec gestion atomique des tronçons et réservation sécurisée.
+                        </p>
+                        <div class="text-[11px] text-slate-400">
+                            PFE Challenge EMC Agadir • Sujet 3
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Plateforme</h4>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            <li><a href="{{ path('app_home') }}" class="hover:text-brand-600 transition">Rechercher un trajet</a></li>
+                            <li><a href="{{ path('app_home') }}#publish" class="hover:text-brand-600 transition">Publier une annonce</a></li>
+                            <li><a href="{{ path('app_home') }}#rules" class="hover:text-brand-600 transition">Règles d'annulation (H-24)</a></li>
+                            <li><a href="{{ path('admin') }}" class="hover:text-brand-600 transition">Espace Back-Office (/admin)</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Liaisons Populaires</h4>
+                        <ul class="space-y-2 text-xs text-slate-600">
+                            <li><a href="{{ path('app_home', {origin: 'Agadir', destination: 'Marrakech'}) }}" class="hover:text-brand-600 transition">Agadir → Marrakech</a></li>
+                            <li><a href="{{ path('app_home', {origin: 'Marrakech', destination: 'Casablanca'}) }}" class="hover:text-brand-600 transition">Marrakech → Casablanca</a></li>
+                            <li><a href="{{ path('app_home', {origin: 'Agadir', destination: 'Essaouira'}) }}" class="hover:text-brand-600 transition">Agadir → Essaouira</a></li>
+                            <li><a href="{{ path('app_home', {origin: 'Casablanca', destination: 'Rabat'}) }}" class="hover:text-brand-600 transition">Casablanca → Rabat</a></li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">Sécurité & Conformité</h4>
+                        <div class="space-y-2 text-xs text-slate-600">
+                            <div class="flex items-center gap-2 text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-200/60 font-medium text-[11px]">
+                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                <span>Plateforme conforme CNDP</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">
+                                Conducteurs vérifiés par CNI, permis et assurance valide. Respect strict des données personnelles.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+                    <p>© 2026 SafarCar Maroc. Tous droits réservés. Développé pour EMC Agadir.</p>
+                    <div class="flex items-center gap-4 text-[11px]">
+                        <span>Symfony 7.4 • PHP 8.3</span>
+                        <span>•</span>
+                        <span>MySQL 8.0</span>
+                        <span>•</span>
+                        <span>Docker</span>
+                    </div>
+                </div>
             </div>
         </footer>
+
     </body>
 </html>
