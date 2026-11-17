@@ -1,0 +1,254 @@
+@startuml
+scale max 2400 width
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam roundcorner 8
+skinparam linetype ortho
+
+' Styling matching Mobdie report standard
+skinparam class {
+    BackgroundColor #FFFFFF
+    BorderColor #2563EB
+    BorderThickness 1.5
+    HeaderBackgroundColor #EFF6FF
+    FontSize 11
+    FontStyle bold
+    AttributeFontSize 10
+    AttributeFontName "Consolas"
+}
+
+skinparam enum {
+    BackgroundColor #F8FAFC
+    BorderColor #64748B
+    BorderThickness 1.5
+    HeaderBackgroundColor #E2E8F0
+    FontSize 11
+    FontStyle bold
+    AttributeFontSize 10
+    AttributeFontName "Consolas"
+}
+
+skinparam package {
+    BorderThickness 1.5
+    BorderColor #334155
+    BackgroundColor #F8FAFC
+    FontSize 12
+    FontStyle bold
+}
+
+skinparam arrow {
+    Color #334155
+    Thickness 1.3
+    FontSize 10
+    FontStyle bold
+}
+
+package "App\\Domain\\Enum" as EnumPkg #F1F5F9 {
+    enum TripStatus {
+        + SCHEDULED
+        + ACTIVE
+        + COMPLETED
+        + CANCELLED
+        __
+        + label(): string
+        + badgeClass(): string
+    }
+
+    enum BookingStatus {
+        + CONFIRMED
+        + CANCELLED_PASSENGER
+        + CANCELLED_DRIVER
+        __
+        + label(): string
+    }
+}
+
+package "App\\Entity" as EntityPkg #FFFFFF {
+
+    class User <<Entity>> #FFFFFF {
+        - id: ?int
+        - email: ?string [UK]
+        - roles: array<string>
+        - password: ?string
+        - firstname: ?string
+        - lastName: ?string
+        - phone: ?string
+        - bio: ?string
+        - avatar: ?string
+        - createdAt: ?DateTimeImmutable
+        __
+        + getUserIdentifier(): string
+        + getRoles(): array
+        + getFirstname(): ?string
+        + getLastName(): ?string
+        + getVehicles(): Collection
+        + getTrips(): Collection
+        + getBookings(): Collection
+    }
+
+    class Vehicle <<Entity>> #FFFFFF {
+        - id: ?int
+        - owner: ?User
+        - brand: ?string
+        - model: ?string
+        - color: ?string
+        - licensePlate: ?string
+        - seats: ?int
+        - airConditioned: ?bool
+        __
+        + getOwner(): ?User
+        + getBrand(): ?string
+        + getModel(): ?string
+        + getSeats(): ?int
+        + isAirConditioned(): ?bool
+    }
+
+    class City <<Entity>> #FFFFFF {
+        - id: ?int
+        - name: ?string [UK]
+        - region: ?string
+        - latitude: ?float
+        - longitude: ?float
+        __
+        + getName(): ?string
+        + getLatitude(): ?float
+        + getLongitude(): ?float
+        + __toString(): string
+    }
+
+    class Trip <<Entity / Aggregate Root>> #F0FDF4 {
+        - id: ?int
+        - driver: ?User
+        - vehicle: ?Vehicle
+        - departureCity: ?City
+        - arrivalCity: ?City
+        - departureAt: ?DateTimeImmutable
+        - totalSeats: ?int
+        - priceTotal: ?int
+        - luggageAllowed: ?bool
+        - status: ?TripStatus
+        - routeGeometry: ?string
+        - distanceKm: ?float
+        - createdAt: ?DateTimeImmutable
+        __
+        + getDriver(): ?User
+        + getVehicle(): ?Vehicle
+        + getStops(): Collection<TripStop>
+        + getSegments(): Collection<TripSegment>
+        + getStatus(): ?TripStatus
+        + isSelfBooking(User): bool
+    }
+
+    class TripStop <<Entity>> #F0FDF4 {
+        - id: ?int
+        - trip: ?Trip
+        - city: ?City
+        - stopOrder: ?int
+        - estimatedArrivalAt: ?DateTimeImmutable
+        - meetingPoint: ?string
+        __
+        + getTrip(): ?Trip
+        + getCity(): ?City
+        + getStopOrder(): ?int
+        + getEstimatedArrivalAt(): ?DateTimeImmutable
+        + __toString(): string
+    }
+
+    class TripSegment <<Entity (Atomic Inventory)>> #ECFDF5 {
+        - id: ?int
+        - trip: ?Trip
+        - fromStop: ?TripStop
+        - toStop: ?TripStop
+        - segmentOrder: ?int
+        - availableSeats: ?int
+        - price: ?int
+        - distanceKm: ?float
+        __
+        + getTrip(): ?Trip
+        + getFromStop(): ?TripStop
+        + getToStop(): ?TripStop
+        + getAvailableSeats(): ?int
+        + decrementSeats(int): void
+        + releaseSeats(int): void
+    }
+
+    class Booking <<Entity>> #FFFBEB {
+        - id: ?int
+        - passenger: ?User
+        - trip: ?Trip
+        - boardingStop: ?TripStop
+        - alightingStop: ?TripStop
+        - seatsBooked: ?int
+        - totalPrice: ?int
+        - refundAmount: ?int
+        - status: ?BookingStatus
+        - createdAt: ?DateTimeImmutable
+        - cancelledAt: ?DateTimeImmutable
+        __
+        + getPassenger(): ?User
+        + getTrip(): ?Trip
+        + getBoardingStop(): ?TripStop
+        + getAlightingStop(): ?TripStop
+        + getSeatsBooked(): ?int
+        + getStatus(): ?BookingStatus
+    }
+
+    class BookingSegment <<Junction Entity>> #FEF3C7 {
+        - id: ?int
+        - booking: ?Booking
+        - segment: ?TripSegment
+        - seatsCount: ?int
+        __
+        + getBooking(): ?Booking
+        + getSegment(): ?TripSegment
+        + getSeatsCount(): ?int
+    }
+
+    class Review <<Entity>> #F5F3FF {
+        - id: ?int
+        - author: ?User
+        - target: ?User
+        - trip: ?Trip
+        - rating: ?int
+        - comment: ?string
+        - createdAt: ?DateTimeImmutable
+        __
+        + getAuthor(): ?User
+        + getTarget(): ?User
+        + getTrip(): ?Trip
+        + getRating(): ?int
+    }
+}
+
+' ================= Relationships & Cardinalities =================
+
+User "1" *-- "0..*" Vehicle : "owns"
+User "1" --> "0..*" Trip : "driver"
+User "1" --> "0..*" Booking : "passenger"
+User "1" <-- "0..*" Review : "author"
+User "1" <-- "0..*" Review : "target"
+
+Vehicle "1" <-- "0..*" Trip : "uses"
+
+City "1" <-- "0..*" Trip : "departureCity"
+City "1" <-- "0..*" Trip : "arrivalCity"
+City "1" <-- "0..*" TripStop : "located at"
+
+Trip "1" *-- "2..*" TripStop : "contains (stops)"
+Trip "1" *-- "1..*" TripSegment : "decomposes into\n(atomic inventory)"
+Trip "1" --> "0..*" Booking : "receives"
+Trip "1" <-- "0..*" Review : "trip"
+
+TripStop "1" <-- "0..*" TripSegment : "fromStop"
+TripStop "1" <-- "0..*" TripSegment : "toStop"
+TripStop "1" <-- "0..*" Booking : "boardingStop"
+TripStop "1" <-- "0..*" Booking : "alightingStop"
+
+Booking "1" *-- "1..*" BookingSegment : "spans segments"
+TripSegment "1" <-- "0..*" BookingSegment : "locks seats on"
+
+Trip ..> TripStatus : uses
+Booking ..> BookingStatus : uses
+
+@enduml

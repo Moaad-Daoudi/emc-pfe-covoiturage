@@ -77,7 +77,7 @@ flowchart LR
 ### 🔹 Sprint 1: Level 1 — Domain Modeling, Fixtures & Back-Office (Day 1 Afternoon - Day 2)
 > **Goal:** Design the relational domain model, generate realistic Moroccan seed data, and deliver the EasyAdmin back-office.
 
-- [ ] **T-101: Domain Entity Modeling**
+- [x] **T-101: Domain Entity Modeling**
   - `User`: Implements `UserInterface`, profile info, avatar, phone.
   - `Vehicle`: License plate, make, model, color, total seats.
   - `City`: Name (Agadir, Marrakech, Essaouira, Casablanca...), latitude, longitude.
@@ -87,18 +87,18 @@ flowchart LR
   - `Booking`: Passenger, trip, boarding stop, drop-off stop, seat count, status (`CONFIRMED`, `CANCELLED_PASSENGER`, `CANCELLED_DRIVER`), total price.
   - `BookingSegment`: Junction entity mapping reserved seats across each atomic segment.
   - `Review`: Author, recipient, trip, rating (1-5), comment, creation timestamp.
-- [ ] **T-102: Doctrine Migrations**
+- [x] **T-102: Doctrine Migrations**
   - Generate and run the initial migration with foreign key constraints and query indexes.
-- [ ] **T-103: Realistic Moroccan Fixtures (`AppFixtures`)**
+- [x] **T-103: Realistic Moroccan Fixtures (`AppFixtures`)**
   - Integrate `FakerPHP`.
   - Seed 15 Moroccan cities with accurate geographic coordinates.
   - Seed the **4 mandatory demo accounts**.
   - Generate 20 realistic trips (future trips, fully booked trips, and completed trips with reviews).
-- [ ] **T-104: EasyAdmin 4 Setup (Screen S12)**
+- [x] **T-104: EasyAdmin 4 Setup (Screen S12)**
   - Install `easycorp/easyadmin-bundle`.
   - Centralized `/admin` dashboard protected by `ROLE_ADMIN`.
   - CRUD Controllers: `CityCrudController`, `UserCrudController`, `VehicleCrudController`, `TripCrudController`, `BookingCrudController`, `ReviewCrudController`.
-- [ ] **T-105: Domain Documentation (`docs/MODELE.md`)**
+- [x] **T-105: Domain Documentation (`docs/MODELE.md`)**
   - Comprehensive Mermaid ER diagram.
   - Architectural justification for the atomic `TripSegment` model solving the sub-segment booking challenge.
 
