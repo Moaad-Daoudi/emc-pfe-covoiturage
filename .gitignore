@@ -1,0 +1,37 @@
+### Symfony ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+
+### Testing ###
+/.phpunit.result.cache
+/phpunit.xml
+/tests/bootstrap.php.cache
+
+### Assets & Frontend ###
+/public/build/
+/node_modules/
+
+### Docker & Databases ###
+/docker/mysql/data/
+/docker/mysql/logs/
+*.sql
+*.sqlite
+
+### IDE & OS ###
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+### Archives & Secrets ###
+*.zip
+*.tar.gz
+*.log

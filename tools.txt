@@ -1,0 +1,93 @@
+================================================================================
+PFE CHALLENGE EMC — TOOLS & TECHNICAL ENVIRONMENT
+Candidate: Moaad Daoudi (State Digital Transformation & AI Engineer)
+Recommended Subject: Subject 3 — Regional Carpooling Platform
+================================================================================
+
+1. WHAT YOU MUST HAVE ON YOUR LOCAL HOST MACHINE (WINDOWS)
+--------------------------------------------------------------------------------
+- Docker Desktop (ALREADY INSTALLED on your machine)
+- Git (for version control and pushing to GitHub)
+- Visual Studio Code or your preferred code editor
+- Web Browser (Chrome / Edge / Firefox)
+- Optional: VS Code "Docker" and "Dev Containers" extensions
+
+IMPORTANT ARCHITECTURAL NOTE:
+You DO NOT need to install PHP, MySQL, or Composer directly on Windows!
+Everything can (and should) run 100% inside Docker containers via Docker Compose.
+This prevents Windows environment issues and guarantees that your project
+will execute identically on the evaluation jury's machine.
+
+
+2. DOCKER ARCHITECTURE (DOCKERFILE OR DOCKER COMPOSE?)
+--------------------------------------------------------------------------------
+You will use BOTH together:
+
+A) A "Dockerfile":
+   - Builds a custom PHP 8.3 FPM image.
+   - Installs required Symfony extensions: pdo_mysql, intl, opcache, zip.
+   - Embeds Composer directly inside.
+
+B) A "docker-compose.yml":
+   - Orchestrates the 3 core services:
+     1. "php" service: Runs Symfony 7.4 and CLI commands (migrations, fixtures, tests).
+     2. "web" service (Nginx): Serves the web app on http://localhost:8000.
+     3. "database" service (MySQL 8.0): Persists relational data in a Docker volume.
+
+C) HOW YOU WORK DAILY VIA DOCKER:
+   - Start the environment:
+     docker compose up -d
+   - Run a Symfony console command:
+     docker compose exec php bin/console make:entity
+     docker compose exec php bin/console doctrine:migrations:migrate
+     docker compose exec php bin/console doctrine:fixtures:load
+   - Run automated tests:
+     docker compose exec php bin/phpunit
+   - Install a package with Composer:
+     docker compose exec php composer require symfony/http-client
+
+
+3. COMPLETE TOOLCHAIN BY CHALLENGE LEVEL
+--------------------------------------------------------------------------------
+
+[LEVEL 1 — MODELING (15 pts)]
+- PHP 8.3 + Symfony 7.4 (inside PHP container)
+- MySQL 8.0 (inside database container)
+- Doctrine ORM + Doctrine Migrations Bundle
+- DoctrineFixturesBundle + FakerPHP (to seed Moroccan cities and demo trips)
+- EasyAdmin 4 Bundle (for the administrative back-office)
+
+[LEVEL 2 — BUSINESS RULES & CONCURRENCY (15 pts)]
+- Doctrine Transactions ($entityManager->wrapInTransaction)
+- Doctrine Locking (PESSIMISTIC_WRITE to prevent simultaneous overbooking)
+- PHPUnit + Symfony WebTestCase (automated unit and integration test suite)
+
+[LEVEL 3 — PRODUCT & USER EXPERIENCE (10 pts)]
+- Symfony Security Bundle (ROLE_USER, ROLE_ADMIN, and contextual Voters)
+- Twig (server-side template engine)
+- Tailwind CSS (via Symfony AssetMapper)
+- Symfony UX / Stimulus (dynamic front-end interactions)
+- Leaflet.js (interactive OpenStreetMap visualization)
+
+[LEVEL 4 — EXTERNAL APIS (7 pts)]
+- Symfony HttpClient (symfony/http-client)
+- Nominatim API (OpenStreetMap): Free geocoding for Moroccan cities
+- OSRM API (Open Source Routing Machine): Real road distance and duration calculation
+- Suggested Pricing Engine: Algorithmic pricing based on road distance and base costs
+
+[LEVEL 5 — DELIVERY & PACKAGING (8 pts)]
+- Turnkey docker-compose.yml
+- Single startup command (docker compose up -d)
+- INSTALL.md guide (step-by-step instructions for evaluators)
+
+[METHODOLOGY & DELIVERABLES (45 pts)]
+- Git & GitHub (frequent, meaningful commits; no history rewriting)
+- Mermaid.js (for ER diagram in docs/MODELE.md)
+- Markdown (README.md, docs/DECISIONS.md, INSTALL.md)
+- LaTeX / Typst / Canva (for the 1-page Conceptual Note PDF)
+
+[AI TRACES BONUS (+15 pts)]
+- Google AI Studio (Gemini Hydrogen): Architecture design, prompt iteration
+- Antigravity: Code scaffolding, Docker configuration, automated tests
+- traces-ia.zip archive with exported prompts + mandatory LISEZMOI.md report
+================================================================================
