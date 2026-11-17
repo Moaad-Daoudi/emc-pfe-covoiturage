@@ -205,9 +205,10 @@ flowchart LR
   - Multi-segment trip breakdown calculating proportional and degressive prices across intermediate stops.
   - Regulatory price ceiling check (`isPriceCompliant()`) guarding against commercial rates (> 0.65 MAD/km).
   - Structured DTO `PricingBreakdown` and 4 unit tests with 28 assertions passing (`tests/Unit/PricingServiceTest.php`).
-- [ ] **T-404: Front-End Interactive Map Integration (Leaflet.js)**
-  - Stimulus controller rendering the map on trip publish (S05) and trip details (S02).
-  - Draw the real OSRM route geometry and place custom markers for all stops.
+- [x] **T-404: Front-End Interactive Map Integration (Leaflet.js)**
+  - Stimulus controller `map_controller.js` managing Leaflet maps, custom Moroccan styled stop markers, and bounds fitting.
+  - Integration on Screen S02 (`/trips/{id}`): rendering real OSRM GeoJSON polyline geometry, stop markers with popups, and route timeline synchronization.
+  - Integration on Screen S05 (`/driver/trips/new`): live interactive Leaflet route preview with stop markers and motorway polyline.
 
 ---
 

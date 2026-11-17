@@ -2,6 +2,11 @@
 
 {% block title %}Proposer un trajet d'exception — SafarCar Maroc{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+{% endblock %}
+
 {% block body %}
 <!-- Header Banner (Forest Green & Gold Accents) -->
 <div class="bg-forest-900 border-b border-emerald-950/40 text-white relative overflow-hidden">
@@ -382,13 +387,16 @@
                 <div class="grid grid-cols-2 gap-2 mb-4">
                     <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex items-center gap-2">
                         <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        <span class="text-xs font-bold text-slate-800">230 km</span>
+                        <span class="text-xs font-bold text-slate-800" id="preview-distance-pill">230 km</span>
                     </div>
                     <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex items-center gap-2">
                         <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span class="text-xs font-bold text-slate-800">3h 45min</span>
+                        <span class="text-xs font-bold text-slate-800" id="preview-duration-pill">3h 45min</span>
                     </div>
                 </div>
+
+                <!-- Interactive Leaflet Route Map (T-404) -->
+                <div id="driver-publish-map" class="h-48 w-full rounded-2xl border border-slate-200 mb-4 z-0 shadow-sm overflow-hidden"></div>
 
                 <!-- Visual Route Graphic / Schema -->
                 <div class="relative bg-gradient-to-br from-slate-800 via-forest-900 to-slate-900 rounded-2xl p-5 text-white shadow-inner mb-4 overflow-hidden">
@@ -675,6 +683,53 @@ document.addEventListener('DOMContentLoaded', function() {
     dateInput.addEventListener('change', syncDate);
     timeInput.addEventListener('change', syncDate);
     syncDate();
+
+    // Leaflet Interactive Route Map Initialization (T-404)
+    if (typeof L !== 'undefined' && document.getElementById('driver-publish-map')) {
+        const publishMap = L.map('driver-publish-map', {
+            center: [31.0, -8.8],
+            zoom: 7,
+            scrollWheelZoom: false
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '© OpenStreetMap • SafarCar OSRM'
+        }).addTo(publishMap);
+
+        // Standard waypoints: Agadir -> Chichaoua -> Marrakech
+        const publishWaypoints = [
+            { name: 'Agadir', lat: 30.4278, lng: -9.5981, color: '#0d9488' },
+            { name: 'Chichaoua', lat: 31.5422, lng: -8.7617, color: '#f59e0b' },
+            { name: 'Marrakech', lat: 31.6295, lng: -7.9811, color: '#0d9488' }
+        ];
+
+        const bounds = L.latLngBounds([]);
+        publishWaypoints.forEach((wp, index) => {
+            const pt = [wp.lat, wp.lng];
+            bounds.extend(pt);
+
+            const icon = L.divIcon({
+                className: 'custom-publish-marker',
+                html: `<div style="background-color: ${wp.color}; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-family: 'Plus Jakarta Sans', sans-serif;">${index + 1}</div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            L.marker(pt, { icon }).addTo(publishMap).bindPopup(`<b>${wp.name}</b>`);
+        });
+
+        // Polyline connecting stops
+        L.polyline(publishWaypoints.map(w => [w.lat, w.lng]), {
+            color: '#0d9488',
+            weight: 4,
+            opacity: 0.9,
+            dashArray: '3, 6'
+        }).addTo(publishMap);
+
+        publishMap.fitBounds(bounds, { padding: [25, 25] });
+    }
 });
 </script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 {% endblock %}

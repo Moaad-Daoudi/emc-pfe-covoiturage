@@ -606,7 +606,9 @@
             });
         }
 
-        // 2. Leaflet Map Initialization
+        const routeGeometry = {{ routeGeometryJson|raw }};
+
+        // 2. Leaflet Map Initialization with Real OSRM Road Geometry
         if (typeof L !== 'undefined' && document.getElementById('trip-map') && waypoints.length > 0) {
             const map = L.map('trip-map', {
                 scrollWheelZoom: false,
@@ -614,42 +616,56 @@
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
-                attribution: '© OpenStreetMap'
+                attribution: '© OpenStreetMap • SafarCar OSRM'
             }).addTo(map);
 
-            const latLngs = [];
+            const bounds = L.latLngBounds([]);
 
             waypoints.forEach((wp, index) => {
                 const point = [wp.lat, wp.lng];
-                latLngs.push(point);
+                bounds.extend(point);
 
-                // Custom marker icon
-                const markerColor = wp.isInitial || wp.isFinal ? '#047857' : '#d97706';
+                // Custom marker icon with Moroccan highway stop colors
+                const markerColor = wp.isInitial || wp.isFinal ? '#0d9488' : '#f59e0b';
                 const customIcon = L.divIcon({
                     className: 'custom-map-marker',
-                    html: `<div style="background-color: ${markerColor}; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">${index + 1}</div>`,
-                    iconSize: [26, 26],
-                    iconAnchor: [13, 13]
+                    html: `<div style="background-color: ${markerColor}; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: 'Plus Jakarta Sans', sans-serif;">${index + 1}</div>`,
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14]
                 });
 
                 const marker = L.marker(point, { icon: customIcon }).addTo(map);
                 marker.bindPopup(`
-                    <div style="padding: 4px;">
+                    <div style="padding: 4px; font-family: 'Plus Jakarta Sans', sans-serif;">
                         <div style="font-weight: 800; font-size: 13px; color: #0f172a;">${wp.city} • ${wp.time}</div>
                         <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${wp.meetingPoint}</div>
                     </div>
                 `);
             });
 
-            // Draw road polyline in brand emerald
-            const polyline = L.polyline(latLngs, {
-                color: '#0d9488',
-                weight: 4,
-                opacity: 0.9,
-                dashArray: '1, 6'
-            }).addTo(map);
+            // Draw Real OSRM GeoJSON Road Geometry
+            if (routeGeometry && routeGeometry.coordinates && routeGeometry.coordinates.length > 0) {
+                const geoJsonLayer = L.geoJSON(routeGeometry, {
+                    style: {
+                        color: '#0d9488',
+                        weight: 5,
+                        opacity: 0.95,
+                        lineJoin: 'round',
+                        lineCap: 'round'
+                    }
+                }).addTo(map);
+                bounds.extend(geoJsonLayer.getBounds());
+            } else {
+                const polyline = L.polyline(waypoints.map(w => [w.lat, w.lng]), {
+                    color: '#0d9488',
+                    weight: 4,
+                    opacity: 0.9,
+                    dashArray: '4, 8'
+                }).addTo(map);
+                bounds.extend(polyline.getBounds());
+            }
 
-            map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
+            map.fitBounds(bounds, { padding: [35, 35] });
         }
     });
 </script>

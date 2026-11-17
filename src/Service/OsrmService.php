@@ -215,7 +215,7 @@ class OsrmService
                 'User-Agent' => $this->userAgent,
                 'Accept' => 'application/json',
             ],
-            'timeout' => 3.5,
+            'timeout' => 1.2,
         ]);
 
         if ($response->getStatusCode() !== 200) {

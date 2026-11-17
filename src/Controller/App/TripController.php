@@ -8,6 +8,7 @@ use App\Entity\Trip;
 use App\Entity\TripStop;
 use App\Repository\ReviewRepository;
 use App\Repository\TripRepository;
+use App\Service\OsrmService;
 use App\Service\RideBookingManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,8 @@ class TripController extends AbstractController
         Request $request,
         TripRepository $tripRepository,
         RideBookingManager $bookingManager,
-        ReviewRepository $reviewRepository
+        ReviewRepository $reviewRepository,
+        OsrmService $osrmService
     ): Response {
         $trip = $tripRepository->find($id);
 
@@ -147,6 +149,13 @@ class TripController extends AbstractController
             ];
         }
 
+        // Calculate real OSRM road geometry and duration
+        try {
+            $routeResult = $osrmService->calculateRouteForTrip($trip);
+        } catch (\Throwable) {
+            $routeResult = null;
+        }
+
         return $this->render('app/trip/show.html.twig', [
             'trip' => $trip,
             'stops' => $stops,
@@ -157,6 +166,8 @@ class TripController extends AbstractController
             'selectedFromStop' => $selectedFromStop,
             'selectedToStop' => $selectedToStop,
             'activeSubTrip' => $activeSubTrip,
+            'routeResult' => $routeResult,
+            'routeGeometryJson' => json_encode($routeResult?->geometry ?? ['type' => 'LineString', 'coordinates' => []], JSON_THROW_ON_ERROR),
             'matrixJson' => json_encode($matrix, JSON_THROW_ON_ERROR),
             'mapWaypointsJson' => json_encode($mapWaypoints, JSON_THROW_ON_ERROR),
         ]);
