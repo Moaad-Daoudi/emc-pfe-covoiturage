@@ -215,32 +215,35 @@ flowchart LR
 ### 🔹 Sprint 5: Level 5, Deliverables & AI Traces Bonus (+15 pts) (Day 7)
 > **Goal:** Finalize the turnkey Docker deployment, compile documentation, write the 1-page concept note, and package AI traces.
 
-- [ ] **T-501: Automated Turnkey Docker Deployment (Level 5)**
+- [x] **T-501: Automated Turnkey Docker Deployment (Level 5)**
   - Automated container startup running migrations and fixtures in a single command:
     ```bash
     docker compose up -d
     ```
-  - Verify complete fresh installation on a clean machine.
-- [ ] **T-502: Step-by-Step Installation Guide (`INSTALL.md`)**
+  - Built custom `docker/php/entrypoint.sh` executing migrations and conditional fixture seeding on startup.
+- [x] **T-502: Step-by-Step Installation Guide (`INSTALL.md`)**
   - Clear prerequisites (Docker & Docker Compose).
-  - Exact startup commands.
-  - Table of demo accounts and passwords.
-  - Automated test execution commands.
-- [ ] **T-503: Architectural Decision Records (`docs/DECISIONS.md`)**
-  - Document clear answers to the challenge's "Questions to Decide".
-  - Architectural justification: *2 Security Roles + Contextual Voters*.
-  - Concurrency design rationale: *Pessimistic Locking vs Optimistic Locking*.
-- [ ] **T-504: 1-Page Conceptual Note PDF (`note_conceptuelle.pdf`)**
+  - Exact 1-command startup instructions.
+  - Table of pre-configured demo accounts and passwords.
+  - Automated test execution commands and troubleshooting guide.
+- [x] **T-503: Architectural Decision Records (`docs/DECISIONS.md`)**
+  - Document clear answers to the challenge's 5 "Questions to Decide".
+  - Architectural justification: *2 Security Roles + Contextual Voters* (ADR-001).
+  - Concurrency design rationale: *Pessimistic Locking vs Optimistic Locking* (ADR-002).
+  - Multi-segment atomic modeling and bottleneck capacity (ADR-003).
+  - OSRM and Nominatim resilient caching architecture with offline road matrix (ADR-004).
+  - Non-commercial transport pricing compliance under Moroccan law (ADR-005).
+- [x] **T-504: 1-Page Conceptual Note PDF (`note_conceptuelle.pdf`)**
   - Executive 6-section summary: Subject choice, requirement decomposition, architectural decisions, execution order, AI steering methodology, and +1 week roadmap.
-  - Clean 1-page PDF export.
-- [ ] **T-505: AI Traces Archive (`traces-ia.zip`) & `LISEZMOI.md` (+15 pts Bonus)**
-  - Export AI Studio chats (Gemini Hydrogen) and Antigravity logs.
-  - Complete `LISEZMOI.md` documenting tools used, archive contents, and **3 key learnings** (time saved, AI hallucinations/errors, and engineering corrections applied).
-  - Sanitize and remove all personal tokens, passwords, and API keys.
-- [ ] **T-506: Final Git Repository Review & Submission Preparation**
-  - Verify clean, linear commit history on `main` branch (no squashing or forced rebase).
-  - Tag release `v1.0.0`.
-  - Draft formal submission email to `pfe@educationmedia.ma`.
+  - Compiled high-fidelity 1-page PDF export (`note_conceptuelle.pdf`) and markdown version (`docs/note_conceptuelle.md`).
+- [x] **T-505: AI Traces Archive (`traces-ia.zip`) & `LISEZMOI.md` (+15 pts Bonus)**
+  - Integrated official Google AI Studio raw JSON export (`traces-ia/ai-studio/Projet Covoiturage Régional.json`) and Antigravity execution transcripts.
+  - Detailed `traces-ia/LISEZMOI.md` documenting toolchain, archive contents, and **3 key learnings** (productivity gains, AI hallucinations, engineering corrections).
+  - Packaged standalone zip archive `traces-ia.zip`.
+- [x] **T-506: Final Git Repository Review & Submission Preparation**
+  - Verified clean, linear commit history on `main` branch.
+  - Tagged release `v1.0.0`.
+  - Drafted formal submission email in `docs/SUBMISSION_EMAIL.md`.
 
 ---
 
@@ -254,4 +257,4 @@ flowchart LR
 | **Day 4** | Sprint 3 | Passenger Flow (Search, Details, Checkout, Bookings) | ✅ Completed |
 | **Day 5** | Sprint 3 | Driver Flow + Public Profiles + Verified Reviews | ✅ Completed |
 | **Day 6** | Sprint 4 | OSRM & Nominatim Integration + Leaflet Route Map + Lucide Icons + 100% Dynamic DB Data | ✅ Completed |
-| **Day 7** | Sprint 5 | `INSTALL.md`, 1-Page PDF Note, AI Traces & Final Submission | ⏳ Ready for Sprint 5 |
+| **Day 7** | Sprint 5 | `INSTALL.md`, 1-Page PDF Note, AI Traces & Final Submission | ✅ Completed |
