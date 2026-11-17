@@ -2,13 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Trip;
 use App\Entity\TripSegment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<TripSegment>
- */
 class TripSegmentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +15,43 @@ class TripSegmentRepository extends ServiceEntityRepository
         parent::__construct($registry, TripSegment::class);
     }
 
-//    /**
-//     * @return TripSegment[] Returns an array of TripSegment objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Retourne les segments ordonnés pour le sous-trajet [startOrder, endOrder).
+     *
+     * @return TripSegment[]
+     */
+    public function findBetweenStopOrders(
+        Trip $trip,
+        int $startOrder,
+        int $endOrder,
+        bool $lockForUpdate = false,
+    ): array {
+        $qb = $this->createQueryBuilder('s')
+            ->where('s.trip = :trip')
+            ->andWhere('s.segmentOrder >= :startOrder')
+            ->andWhere('s.segmentOrder < :endOrder')
+            ->setParameter('trip', $trip)
+            ->setParameter('startOrder', $startOrder)
+            ->setParameter('endOrder', $endOrder)
+            ->orderBy('s.segmentOrder', 'ASC');
 
-//    public function findOneBySomeField($value): ?TripSegment
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $query = $qb->getQuery();
+
+        if ($lockForUpdate) {
+            // Préparé pour T-202 (à exécuter obligatoirement dans une transaction)
+            $query->setLockMode(LockMode::PESSIMISTIC_WRITE);
+        }
+
+        return $query->getResult();
+    }
+
+    /**
+     * Alias method for finding segments between two stop orders.
+     *
+     * @return TripSegment[]
+     */
+    public function findSegmentsForPath(Trip $trip, int $fromOrder, int $toOrder, bool $lockForUpdate = false): array
+    {
+        return $this->findBetweenStopOrders($trip, $fromOrder, $toOrder, $lockForUpdate);
+    }
 }

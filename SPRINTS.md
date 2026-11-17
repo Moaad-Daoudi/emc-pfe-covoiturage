@@ -107,7 +107,7 @@ flowchart LR
 ### 🔹 Sprint 2: Level 2 — Business Rules, Concurrency & Automated Tests (Day 3)
 > **Goal:** Enforce data integrity, eliminate race conditions via database locks, and achieve full PHPUnit test coverage.
 
-- [ ] **T-201: Segment Inventory & Booking Engine**
+- [x] **T-201: Segment Inventory & Booking Engine**
   - Create the `BookingService` domain service.
   - Segment overlap check: Booking from stop $i$ to stop $j$ validates that all atomic segments $[i, i+1], ..., [j-1, j]$ satisfy `availableSeats >= requestedSeats`.
 - [ ] **T-202: Concurrency Control & Pessimistic Locking**

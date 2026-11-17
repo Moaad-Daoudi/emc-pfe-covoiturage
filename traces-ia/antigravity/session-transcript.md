@@ -52,3 +52,21 @@
   - Scaffolded `SecurityController` with `/login` and `/logout`.
   - Created a custom styled Tailwind login view (`templates/security/login.html.twig`) with a **1-Click Demo Login** component pre-filling credentials for all 4 jury test accounts (`admin@covoit.ma`, `amina@covoit.ma`, `karim@covoit.ma`, `youssef@covoit.ma` with password `Demo1234!`).
   - Added dynamic authentication header in `templates/base.html.twig` showing current user and direct access to `/admin` for administrators.
+
+
+---
+
+## Session 05 — Booking Engine & Multi-Segment Inventory Domain Service (T-201)
+
+- **Domain Exceptions (`src/Domain/Exception/`):**
+  - `InsufficientSeatsException`: Thrown with explicit segment details when capacity is exceeded.
+  - `SelfBookingException`: Prevents drivers from reserving seats on their own trips.
+  - `TripNotBookableException`: Blocks reservations on non-scheduled or already departed trips.
+  - `InvalidStopSequenceException`: Rejects invalid or inverted stop combinations.
+- **Repository Optimization (`TripSegmentRepository`):**
+  - Implemented `findSegmentsForPath(Trip $trip, int $fromOrder, int $toOrder)` strictly ordered by `segmentOrder ASC` to enforce deterministic lock ordering.
+- **Booking Engine (`BookingService`):**
+  - Built `getSegmentsForPath()` to extract traversed atomic segments.
+  - Built `getAvailableSeatsForPath()` computing the bottleneck capacity: $\min(\text{availableSeats})$.
+  - Built `calculatePriceForPath()` totaling intermediate segment prices.
+  - Built `bookTrip()` orchestrating invariant checks, atomic seat decrementation, and persistence of `Booking` and `BookingSegment` records.
