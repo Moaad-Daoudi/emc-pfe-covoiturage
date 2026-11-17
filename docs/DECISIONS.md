@@ -54,3 +54,26 @@ This log documents key technical trade-offs, domain rules, and answers to the ch
   - Segments are always queried and locked with `ORDER BY s.segmentOrder ASC`. Since every concurrent transaction requests locks in the exact same spatial order, circular wait (Coffman condition) is mathematically eliminated.
 - **Driver Cancellation Race Condition Guard:**
   - The `$trip` aggregate root itself is locked (`PESSIMISTIC_WRITE`) and refreshed (`$em->refresh($trip)`) inside the transaction to prevent a passenger booking while the driver cancels the trip simultaneously.
+
+### ADR-003: Multi-Segment Data Modeling (Timeline vs Naive Point-to-Point)
+- **Decision:** Split trips into an ordered sequence of stops (`TripStop` with `stopOrder`, `meetingPoint`, `estimatedArrivalAt`) and an adjacent chain of atomic segments (`TripSegment` with `segmentOrder`, `fromStop`, `toStop`, `distanceKm`, `price`, `availableSeats`).
+- **Rationale:** 
+  - A naive origin-destination model fails to handle passengers embarking and disembarking at intermediate regional hubs (e.g., Agadir $\rightarrow$ Essaouira $\rightarrow$ Marrakech $\rightarrow$ Casablanca).
+  - The atomic segment pattern allows passengers to book sub-trips of arbitrary span $[i, j]$.
+  - Bottleneck capacity computation: For any requested sub-trip spanning segments from $i$ to $j$, the available capacity is strictly:
+    $$\text{Capacity}(i, j) = \min_{k=i}^{j-1} (\text{availableSeats}_k)$$
+  - When booked, seats are decremented only on the traversed segments $k \in [i, j-1]$, leaving preceding and succeeding segments fully available for other passengers.
+
+### ADR-004: OSRM Routing & Nominatim Geocoding Resilient Hybrid Architecture
+- **Decision:** Implement dedicated Symfony services (`OsrmService`, `NominatimService`) backed by Symfony `HttpClientInterface`, 30-day PSR-6 cache (`CacheInterface`), and an offline fallback dictionary/matrix.
+- **Rationale:**
+  - **OpenStreetMap Nominatim Policy Compliance:** Strict custom `User-Agent: SafarCar-Morocco-PFE/1.0` header with 1 request/sec rate throttling and persistent caching to prevent IP bans.
+  - **Zero-Downtime Guarantee:** External routing APIs may experience network timeouts or rate limits during jury evaluations. A built-in offline road network matrix covering major Moroccan motorways (A3, A7, N1) paired with Haversine geometric calculations guarantees uninterrupted service even without internet access.
+  - **High Performance:** Repeat queries (e.g. popular Agadir $\rightarrow$ Marrakech route) resolve in $< 1\text{ ms}$ directly from memory cache.
+
+### ADR-005: Regulatory Moroccan Fair Pricing Algorithm (Non-Commercial Compliance)
+- **Decision:** Automated pricing engine (`PricingService`) strictly conforming to Moroccan non-commercial ride-sharing legal principles and ADM (Autoroutes du Maroc) toll rates.
+- **Formula:**
+  $$\text{Price} = \text{round\_to\_5}\left(\left(\text{BaseCost} + (\text{Distance}_{\text{km}} \times \text{Rate}_{\text{km}})\right) \times \text{DegressiveFactor} \times \text{ComfortMultiplier}\right)$$
+- **Regulatory Ceiling:** Enforces an unbreachable ceiling of $0.65\text{ MAD/km}$ (`isPriceCompliant()`) to strictly prevent taxi-clandestin (commercial transport without license) classification under Moroccan transport regulations.
+- **Multi-Segment Fair Proportions:** Intermediate hop prices are proportional to segment distance with a degressive factor for longer distances, ensuring transparent pricing with 0 DH hidden fees.
