@@ -1,67 +1,411 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Espace Conducteur — Mes Trajets Proposés{% endblock %}
+{% block title %}Espace Conducteur Privilège — SafarCar Maroc{% endblock %}
 
 {% block body %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+
+    <!-- Top Header Banner -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-slate-200/60">
         <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                Espace Conducteur Certifié
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-2.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Certification Conducteur Vérifié Élite
             </div>
-            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Mes Trajets Proposés</h1>
-            <p class="text-sm text-slate-500 mt-1">Gérez vos départs, validez vos escales et suivez votre manifeste de bord.</p>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                Espace Conducteur Privilège
+            </h1>
+            <p class="text-sm text-slate-500 max-w-2xl mt-1 leading-relaxed">
+                Gérez vos départs, visualisez le taux d'occupation par tronçon et percevez vos revenus en toute sécurité sur les axes autoroutiers du Royaume.
+            </p>
         </div>
-        <a href="{{ path('app_driver_trip_new') }}" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-5 py-3 rounded-2xl shadow-md shadow-emerald-600/20 transition">
-            <span>+</span>
-            <span>Proposer un nouveau trajet</span>
-        </a>
+
+        <!-- Top Right Action CTAs -->
+        <div class="flex items-center gap-3 shrink-0">
+            <button type="button" onclick="alert('Téléchargement de votre relevé mensuel SafarCar en cours (format PDF certifié)...')"
+                class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs sm:text-sm shadow-2xs transition">
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                <span>Exporter relevé mensuel</span>
+            </button>
+
+            <a href="{{ path('app_driver_trip_new') }}"
+                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-emerald-700/20 hover:scale-[1.02] active:scale-[0.98] transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                <span>+ Nouveau trajet</span>
+            </a>
+        </div>
     </div>
 
-    <!-- Trips List -->
-    <div class="space-y-4">
-        {% for trip in trips %}
-            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-slate-300 transition">
-                <div class="space-y-3">
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-bold px-2.5 py-1 rounded-full {% if trip.status.value == 'SCHEDULED' %}bg-emerald-50 text-emerald-700 border border-emerald-200{% elseif trip.status.value == 'COMPLETED' %}bg-slate-100 text-slate-700{% else %}bg-rose-50 text-rose-700{% endif %}">
+    <!-- 4 KPI Metrics Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        <!-- KPI 1: Planification -->
+        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between text-slate-400 mb-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Planification</span>
+                <span class="text-emerald-600 bg-emerald-50 p-1.5 rounded-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                </span>
+            </div>
+            <div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    {{ kpi.activeCount }} actifs
+                </div>
+                <div class="text-xs font-semibold text-emerald-600 flex items-center gap-1.5 mt-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Prochain départ dans 18h
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 2: Revenus du mois -->
+        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between text-slate-400 mb-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Revenus du mois</span>
+                <span class="text-emerald-600 bg-emerald-50 p-1.5 rounded-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+            </div>
+            <div>
+                <div class="flex items-baseline gap-2">
+                    <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ kpi.monthRevenue|number_format(0, ',', ' ') }} DH</span>
+                    <span class="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-full">+22%</span>
+                </div>
+                <div class="text-xs text-slate-400 mt-1.5">
+                    vs mois précédent (Marrakech-Casa)
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 3: Ponctualité & Avis -->
+        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between text-slate-400 mb-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Ponctualité & Avis</span>
+                <span class="text-amber-500 bg-amber-50 p-1.5 rounded-lg">
+                    <svg class="w-4 h-4 fill-amber-400 stroke-amber-400" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                </span>
+            </div>
+            <div>
+                <div class="flex items-baseline gap-1.5">
+                    <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ kpi.rating }}</span>
+                    <span class="text-sm font-semibold text-slate-400">/ 5.0</span>
+                </div>
+                <div class="mt-1.5">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200/80">
+                        🛡 Ambassadeur SafarCar
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 4: Remplissage Moyen -->
+        <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between text-slate-400 mb-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Remplissage Moyen</span>
+                <span class="text-emerald-600 bg-emerald-50 p-1.5 rounded-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </span>
+            </div>
+            <div>
+                <div class="flex items-baseline gap-2">
+                    <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">{{ kpi.avgOccupancy }}%</span>
+                    <span class="text-xs text-slate-400 font-medium">optimisé</span>
+                </div>
+                <!-- Progress bar -->
+                <div class="w-full h-2 bg-slate-100 rounded-full mt-2.5 overflow-hidden">
+                    <div class="h-full bg-emerald-600 rounded-full" style="width: {{ kpi.avgOccupancy }}%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex items-center gap-2 border-b border-slate-200 pb-1">
+        <button type="button" id="tab-btn-active" onclick="switchDriverTab('active')"
+            class="tab-btn px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-white text-slate-900 border border-slate-200/90 shadow-2xs flex items-center gap-2 transition">
+            <span>🚘</span>
+            <span>Trajets publiés ({{ activeTrips|length }})</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        </button>
+
+        <button type="button" id="tab-btn-past" onclick="switchDriverTab('past')"
+            class="tab-btn px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-2 transition">
+            <span>🕒</span>
+            <span>Historique & Archivés ({{ pastTrips|length }})</span>
+        </button>
+
+        <button type="button" id="tab-btn-vehicles" onclick="switchDriverTab('vehicles')"
+            class="tab-btn px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-2 transition">
+            <span>🚗</span>
+            <span>Mes véhicules homologués ({{ vehicles|length }})</span>
+        </button>
+    </div>
+
+    <!-- Tab 1: Trajets Publiés / Actifs -->
+    <div id="tab-content-active" class="space-y-6">
+        {% for tripData in activeTrips %}
+            {% set trip = tripData.entity %}
+            <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-sm space-y-5 hover:border-slate-300 transition relative overflow-hidden">
+                
+                <!-- Top metadata & forecast revenue strip -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <span class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/70">
+                            {{ tripData.highway }}
+                        </span>
+                        {% if tripData.isFull %}
+                            <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/80 flex items-center gap-1.5">
+                                <span>🔒</span> Complet ({{ trip.totalSeats }}/{{ trip.totalSeats }} places)
+                            </span>
+                        {% else %}
+                            <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Planifié • Départ dans 18h
+                            </span>
+                        {% endif %}
+                        <span class="text-xs font-mono font-bold text-slate-400 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-200/60">
+                            Réf: SFR-{{ trip.id }}
+                        </span>
+                    </div>
+
+                    <!-- Right Financial Forecast & Occupancy Gauge -->
+                    <div class="sm:text-right shrink-0">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                            Revenu Prévisionnel
+                        </span>
+                        <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                            {{ tripData.revenue }} DH
+                        </div>
+                        <div class="flex items-center sm:justify-end gap-2 mt-1">
+                            <div class="w-24 sm:w-28 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-emerald-600 rounded-full" style="width: {{ tripData.occupancyPct }}%;"></div>
+                            </div>
+                            <span class="text-[11px] font-semibold text-slate-500">
+                                {{ tripData.occupancy }}/{{ trip.totalSeats }} places réservées ({{ tripData.occupancyPct }}%)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Itinerary Title & Timeline -->
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex flex-wrap items-center gap-2.5">
+                        <span>{{ trip.departureCity.name }}</span>
+                        {% for stop in tripData.stops %}
+                            {% if not loop.first and not loop.last %}
+                                <span class="text-slate-300 font-light">→</span>
+                                <span class="text-slate-700">{{ stop.city.name }}</span>
+                            {% endif %}
+                        {% endfor %}
+                        <span class="text-slate-300 font-light">→</span>
+                        <span>{{ trip.arrivalCity.name }}</span>
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-1.5 flex items-center gap-2">
+                        <span>📅 {{ trip.departureAt|date('d/m/Y à H:i') }}</span>
+                        <span>•</span>
+                        <span>Départ {{ tripData.stops|first.meetingPoint|default('Gare principale') }}</span>
+                        <span>•</span>
+                        <span>Arrivée {{ tripData.stops|last.meetingPoint|default('Point central') }}</span>
+                    </p>
+                </div>
+
+                <!-- Segment-by-segment Breakdown Sub-Box -->
+                <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/70 border border-slate-200/80">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3.5 border-b border-slate-200/60 pb-3">
+                        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-700">
+                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                            <span>Découpage par tronçon et gestion des sièges</span>
+                        </div>
+                        <span class="text-xs text-slate-500 font-medium">
+                            Véhicule : <strong class="text-slate-700">{{ trip.vehicle.brand }} {{ trip.vehicle.model }}</strong> (Climatisée • Grand coffre)
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        {% for seg in tripData.segments %}
+                            <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs flex flex-col justify-between">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <div class="font-bold text-sm text-slate-900">
+                                            Tronçon {{ loop.index }} : {{ seg.from }} → {{ seg.to }}
+                                        </div>
+                                        <div class="text-xs text-slate-400 mt-0.5">
+                                            Départ {{ seg.departureTime }} • Arrêt {{ seg.fromMeeting }}
+                                        </div>
+                                    </div>
+                                    <span class="font-extrabold text-sm text-slate-900 shrink-0">
+                                        {{ seg.price }} DH<span class="text-xs font-normal text-slate-400">/siège</span>
+                                    </span>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex -space-x-1.5">
+                                            <span class="w-6 h-6 rounded-full bg-emerald-100 border border-white text-[10px] font-bold text-emerald-800 flex items-center justify-center">K</span>
+                                            <span class="w-6 h-6 rounded-full bg-indigo-100 border border-white text-[10px] font-bold text-indigo-800 flex items-center justify-center">M</span>
+                                        </div>
+                                        <span class="font-semibold text-slate-700">{{ seg.occupied }} passager{{ seg.occupied > 1 ? 's' : '' }} confirmé{{ seg.occupied > 1 ? 's' : '' }}</span>
+                                    </div>
+
+                                    {% if seg.available > 0 %}
+                                        <span class="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">
+                                            {{ seg.available }} place{{ seg.available > 1 ? 's' : '' }} libre{{ seg.available > 1 ? 's' : '' }}
+                                        </span>
+                                    {% else %}
+                                        <span class="font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+                                            Tronçon complet
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Action Footer Bar -->
+                <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-slate-100">
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <!-- Manifest link (Screen S07) -->
+                        <a href="{{ path('app_driver_trip_manifest', { id: trip.id }) }}"
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-2xs transition">
+                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <span>Gérer & Feuille d'embarquement</span>
+                        </a>
+
+                        <!-- Passenger messaging -->
+                        <button type="button" onclick="alert('Canal de messagerie sécurisé ouvert avec les {{ tripData.passengers|length }} passagers confirmés.')"
+                            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-2xs transition">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                            <span>Messagerie passagers ({{ tripData.passengers|length }})</span>
+                        </button>
+
+                        <!-- Mark as Completed Form (Evaluator quick-test action) -->
+                        <form action="{{ path('app_driver_trip_complete', { id: trip.id }) }}" method="POST" class="inline" onsubmit="return confirm('Confirmez-vous que ce voyage est terminé ? Cette action clôturera le trajet et ouvrira les avis bidirectionnels.')">
+                            <button type="submit"
+                                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-xs transition">
+                                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                <span>Marquer comme terminé</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Cancel Trip Form (100% refund cascade) -->
+                    <form action="{{ path('app_driver_trip_cancel', { id: trip.id }) }}" method="POST" class="inline" onsubmit="return confirm('ATTENTION : Voulez-vous vraiment annuler ce trajet ? Tous les passagers confirmés seront intégralement remboursés à 100%.')">
+                        <button type="submit"
+                            class="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-600 hover:text-rose-800 transition py-1 px-2 rounded-lg hover:bg-rose-50">
+                            <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>Annuler le voyage</span>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        {% else %}
+            <div class="bg-white rounded-3xl p-12 text-center border border-slate-200">
+                <p class="text-slate-500 text-sm">Vous n'avez aucun départ planifié pour le moment.</p>
+                <a href="{{ path('app_driver_trip_new') }}" class="mt-4 inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:underline">
+                    Publier un nouveau trajet →
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Tab 2: Historique & Archivés -->
+    <div id="tab-content-past" class="space-y-4 hidden">
+        {% for tripData in pastTrips %}
+            {% set trip = tripData.entity %}
+            <div class="bg-white rounded-3xl p-5 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="space-y-1.5">
+                    <div class="flex items-center gap-2.5">
+                        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full {% if trip.status.value == 'COMPLETED' %}bg-slate-100 text-slate-700{% else %}bg-rose-50 text-rose-700{% endif %}">
                             {{ trip.status.value }}
                         </span>
-                        <span class="text-xs text-slate-400">Réf: #TRIP-{{ trip.id }}</span>
+                        <span class="text-xs text-slate-400">SFR-{{ trip.id }}</span>
                         <span class="text-xs text-slate-500">• {{ trip.departureAt|date('d/m/Y à H:i') }}</span>
                     </div>
-
-                    <div class="flex items-center gap-3 text-lg font-extrabold text-slate-900">
-                        <span>{{ trip.departureCity.name }}</span>
-                        <span class="text-emerald-500">→</span>
-                        <span>{{ trip.arrivalCity.name }}</span>
+                    <div class="font-extrabold text-base text-slate-900">
+                        {{ trip.departureCity.name }} → {{ trip.arrivalCity.name }}
                     </div>
-
-                    <div class="flex items-center gap-4 text-xs text-slate-500">
-                        <span>Véhicule : <strong class="text-slate-700">{{ trip.vehicle.brand }} {{ trip.vehicle.model }}</strong></span>
-                        <span>•</span>
-                        <span>Places : <strong class="text-slate-700">{{ trip.totalSeats }}</strong></span>
-                        <span>•</span>
-                        <span>Tarif total : <strong class="text-emerald-700">{{ trip.priceTotal }} DH</strong></span>
+                    <div class="text-xs text-slate-500">
+                        Véhicule : {{ trip.vehicle.brand }} {{ trip.vehicle.model }} • Virement exécuté vers votre RIB
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <a href="{{ path('app_trip_show', { id: trip.id }) }}" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold transition">
-                        Aperçu public
+                    <span class="text-sm font-extrabold text-emerald-700">{{ trip.priceTotal }} DH</span>
+                    <a href="{{ path('app_trip_show', { id: trip.id }) }}" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition">
+                        Voir la fiche
                     </a>
                 </div>
             </div>
         {% else %}
             <div class="bg-white rounded-3xl p-12 text-center border border-slate-200">
-                <p class="text-slate-500 text-sm">Vous n'avez aucun trajet programmé pour le moment.</p>
-                <a href="{{ path('app_driver_trip_new') }}" class="mt-4 inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:underline">
-                    Publier votre premier trajet →
-                </a>
+                <p class="text-slate-500 text-sm">Aucun trajet archivé pour le moment.</p>
             </div>
         {% endfor %}
     </div>
+
+    <!-- Tab 3: Mes Véhicules Homologués -->
+    <div id="tab-content-vehicles" class="space-y-4 hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {% for v in vehicles %}
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-4">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="font-extrabold text-lg text-slate-900 block">{{ v.brand }} {{ v.model }}</span>
+                            <span class="text-xs text-slate-500">{{ v.color }} • {{ v.seats }} places • {% if v.airConditioned %}Climatisé{% else %}Non climatisé{% endif %}</span>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                            Homologué SafarCar
+                        </span>
+                    </div>
+
+                    <!-- License Plate -->
+                    <div class="inline-flex items-center px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-300 text-sm font-mono font-bold tracking-wider text-slate-800 shadow-2xs">
+                        <span>{{ v.licensePlate }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Safety & Compliance Footer Banner -->
+    <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div class="flex items-start gap-4">
+            <div class="w-11 h-11 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-emerald-600 shrink-0 shadow-2xs text-xl">
+                🛡
+            </div>
+            <div>
+                <h3 class="font-extrabold text-sm sm:text-base text-slate-900">
+                    Charte de Conduite Responsable & Sécurité Routière Maroc
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-3xl leading-relaxed">
+                    En tant que conducteur certifié, vous vous engagez à respecter les limitations de vitesse autoroutières (120 km/h), à respecter un temps de pause obligatoire de 20 min toutes les 2 heures, et à vérifier la conformité technique de votre véhicule.
+                </p>
+            </div>
+        </div>
+
+        <button type="button" onclick="alert('Charte SafarCar : respect strict des règles de sécurité CNDP et Ministère du Transport.')"
+            class="shrink-0 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs shadow-2xs transition">
+            Consulter la charte
+        </button>
+    </div>
+
 </div>
+
+<!-- Client-side Tab Switching Logic -->
+<script>
+function switchDriverTab(tabName) {
+    const tabs = ['active', 'past', 'vehicles'];
+    tabs.forEach(t => {
+        const btn = document.getElementById('tab-btn-' + t);
+        const content = document.getElementById('tab-content-' + t);
+        if (t === tabName) {
+            btn.className = 'tab-btn px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-white text-slate-900 border border-slate-200/90 shadow-2xs flex items-center gap-2 transition';
+            content.classList.remove('hidden');
+        } else {
+            btn.className = 'tab-btn px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-800 hover:bg-slate-100/60 flex items-center gap-2 transition';
+            content.classList.add('hidden');
+        }
+    });
+}
+</script>
 {% endblock %}

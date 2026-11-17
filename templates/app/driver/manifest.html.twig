@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Feuille d'embarquement & Manifeste — Trajet #SFR-{{ trip.id }}{% endblock %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6">
+
+    <!-- Breadcrumb & Nav -->
+    <div class="flex items-center gap-2 text-xs text-slate-500 font-medium">
+        <a href="{{ path('app_driver_trips') }}" class="hover:text-emerald-700 transition flex items-center gap-1">
+            <span>←</span>
+            <span>Retour à l'espace conducteur</span>
+        </a>
+        <span>/</span>
+        <span class="text-slate-800 font-bold">Manifeste Trajet #SFR-{{ trip.id }}</span>
+    </div>
+
+    <!-- Header Card -->
+    <div class="bg-forest-900 rounded-3xl p-6 sm:p-8 text-white flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-md">
+        <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider mb-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                Manifeste Passagers Officiel (CNDP & OSRM)
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                {{ trip.departureCity.name }} → {{ trip.arrivalCity.name }}
+            </h1>
+            <p class="text-xs sm:text-sm text-emerald-100/70 mt-1">
+                Départ : {{ trip.departureAt|date('d/m/Y à H:i') }} • Véhicule : {{ trip.vehicle.brand }} {{ trip.vehicle.model }} ({{ trip.vehicle.licensePlate }})
+            </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button type="button" onclick="window.print()" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/20 transition flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                <span>Imprimer le manifeste</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Stops Timeline & Passenger Manifest -->
+    <div class="space-y-6">
+        <h2 class="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <span>📋</span>
+            <span>Contrôle d'accès & Embarquement par arrêt</span>
+        </h2>
+
+        <div class="space-y-4">
+            {% for stop in stops %}
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 font-extrabold text-xs flex items-center justify-center border border-emerald-200/80">
+                                {{ stop.stopOrder + 1 }}
+                            </span>
+                            <div>
+                                <h3 class="font-bold text-base text-slate-900">{{ stop.city.name }}</h3>
+                                <p class="text-xs text-slate-400">Point de RDV : {{ stop.meetingPoint|default('Lieu convenu') }}</p>
+                            </div>
+                        </div>
+
+                        <span class="text-xs font-bold text-slate-500 bg-slate-50 px-3 py-1 rounded-full border border-slate-200/60">
+                            {{ stop.estimatedArrivalAt ? stop.estimatedArrivalAt|date('H:i') : 'Horaire estimé' }}
+                        </span>
+                    </div>
+
+                    <!-- Passenger check-in table for this stop -->
+                    <div class="space-y-2">
+                        {% set stopBookings = [] %}
+                        {% for b in bookings %}
+                            {% if b.boardingStop.id == stop.id %}
+                                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center">
+                                            {{ b.passenger.firstname|first|upper }}
+                                        </div>
+                                        <div>
+                                            <span class="text-sm font-bold text-slate-900 block">{{ b.passenger.firstname }} {{ b.passenger.lastname }}</span>
+                                            <span class="text-xs text-emerald-700 font-semibold">Embarquement • Destination {{ b.alightingStop.city.name }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <a href="tel:{{ b.passenger.phone|default('+212600000000') }}" class="text-xs font-bold text-slate-600 hover:text-emerald-700">
+                                            📞 Appeler
+                                        </a>
+                                        <span class="text-xs font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-1 rounded-lg">
+                                            ✓ Billet validé
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

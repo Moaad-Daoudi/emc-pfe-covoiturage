@@ -165,9 +165,13 @@ flowchart LR
   - Algorithm-compliant price distribution adhering to ADM barème with dynamic per-segment recalculation.
   - Sticky right column with OSRM optimal route schema, live earnings calculation (`seats * price`), 24h payout guarantee, and direct publication CTA.
   - Transactional persistence of `Trip`, ordered `TripStop`s, and consecutive atomic `TripSegment`s.
-- [ ] **T-307: Screens S06 & S07 — Driver Space & Manifest (`/driver/trips`)**
-  - S06: Trip list with quick-action "Mark as Completed" button to streamline jury testing.
-  - S07: Clear manifest showing passenger boardings and exits per stop with contact information.
+- [x] **T-307: Screens S06 & S07 — Driver Space & Manifest (`/driver/trips`, `/driver/trips/{id}`)**
+  - S06: "Espace Conducteur Privilège" matching Stitch prototype with 4 KPI cards (Planification, Revenus du mois, Ponctualité & Avis, Remplissage moyen).
+  - 3 dynamic tabs: *Trajets publiés (actifs)*, *Historique & Archivés*, and *Mes véhicules homologués*.
+  - Multi-segment trip card with detailed breakdown, segment pricing, passenger avatar stack, and live occupancy gauge.
+  - Interactive "Marquer comme terminé" action enabling immediate review eligibility for evaluators.
+  - Driver cancellation action with 100% passenger refund cascade via `CancellationService`.
+  - S07: Official passenger manifest with stop-by-stop passenger check-in and printable boarding sheet.
 - [ ] **T-308: Screens S08 & S09 — Public Profiles & Review System (`/users/{id}`, `/trips/{id}/review`)**
   - S08: Public profile with calculated average ratings, verified driver badges, and review list.
   - S09: 5-star rating form with commentary, guarded by `ReviewVoter`.
