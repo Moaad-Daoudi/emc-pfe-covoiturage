@@ -29,5 +29,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 # Configure working directory
 WORKDIR /var/www/html
 
+# Install automated entrypoint for turnkey 1-command startup (Level 5)
+COPY docker/php/entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 EXPOSE 9000
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["php-fpm"]
