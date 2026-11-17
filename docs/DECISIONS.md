@@ -43,6 +43,14 @@ This log documents key technical trade-offs, domain rules, and answers to the ch
 - **Decision:** Use `ROLE_USER` and `ROLE_ADMIN`, with domain capabilities enforced via `TripVoter`, `BookingVoter`, and `ReviewVoter`.
 - **Rationale:** Satisfies the explicit requirement: *"one person can be both driver and passenger"*. Avoids rigid separate user tables or role switching.
 
-### ADR-002: Pessimistic Database Locking for Seat Concurrency
-- **Decision:** Enforce `LockMode::PESSIMISTIC_WRITE` on `TripSegment` rows inside `$entityManager->wrapInTransaction()`.
-- **Rationale:** High-traffic popular routes can experience simultaneous booking requests for the last remaining seat. In-memory PHP checks are vulnerable to race conditions; database row locks guarantee strict ACID isolation.
+### ADR-002: Pessimistic Database Locking for Seat Concurrency (PESSIMISTIC_WRITE)
+- **Decision:** Enforce `LockMode::PESSIMISTIC_WRITE` (`SELECT ... FOR UPDATE`) with `Query::HINT_REFRESH => true` on `Trip` and `TripSegment` rows inside an ACID transaction via `$entityManager->wrapInTransaction()`.
+- **Comparison vs. Optimistic Locking (`@Version`):**
+  - *Optimistic Locking:* In peaks (e.g. holiday departures or last-minute trips), competing users get an `OptimisticLockException` and a failed screen, forcing manual page reloads and retries.
+  - *Pessimistic Locking:* InnoDB queues concurrent requests row-by-row. The first request takes the seat and commits; the second request waits cleanly, reads the updated `availableSeats = 0`, and gracefully receives a clear business message (`SeatsNotAvailableException`) without data corruption.
+- **Doctrine Identity Map Stale Data Guard (`Query::HINT_REFRESH`):**
+  - If a `TripSegment` was already loaded into Doctrine's memory earlier in the request lifecycle (e.g. in a controller), executing `SELECT ... FOR UPDATE` without `HINT_REFRESH` would lock the row in MySQL but retain stale entity state in PHP memory. Passing `Query::HINT_REFRESH => true` forces Doctrine to immediately overwrite in-memory state with freshly locked DB values.
+- **Deadlock Elimination (Dijkstra Resource Ordering):**
+  - Segments are always queried and locked with `ORDER BY s.segmentOrder ASC`. Since every concurrent transaction requests locks in the exact same spatial order, circular wait (Coffman condition) is mathematically eliminated.
+- **Driver Cancellation Race Condition Guard:**
+  - The `$trip` aggregate root itself is locked (`PESSIMISTIC_WRITE`) and refreshed (`$em->refresh($trip)`) inside the transaction to prevent a passenger booking while the driver cancels the trip simultaneously.

@@ -17,6 +17,7 @@ use App\Exception\SeatsNotAvailableException;
 use App\Exception\SelfBookingNotAllowedException;
 use App\Exception\TripNotBookableException;
 use App\Repository\TripSegmentRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class RideBookingManager
@@ -29,6 +30,7 @@ final class RideBookingManager
 
     /**
      * Valide la cohérence des arrêts et retourne les segments consécutifs traversés.
+     * En mode $lockForUpdate, applique un verrou PESSIMISTIC_WRITE (SELECT ... FOR UPDATE).
      *
      * @return TripSegment[]
      * @throws InvalidTripSegmentException
@@ -56,6 +58,7 @@ final class RideBookingManager
             ));
         }
 
+        // Ordered strictly ASC by segmentOrder to guarantee Dijkstra resource hierarchy and avoid deadlocks
         $segments = $this->segmentRepository->findBetweenStopOrders(
             $trip,
             $startOrder,
@@ -136,8 +139,16 @@ final class RideBookingManager
     }
 
     /**
-     * Crée une réservation confirmée et décrémente les segments concernés.
-     * En T-202, ce flux sera encadré avec wrapInTransaction + lockForUpdate: true.
+     * Crée une réservation confirmée avec contrôle de concurrence strict (T-202).
+     *
+     * Invariants & Architecture Senior:
+     * 1. Fast-fail validation en amont (évite d'ouvrir une transaction ou poser des verrous sur saisie invalide).
+     * 2. Transaction ACID via EntityManager::wrapInTransaction().
+     * 3. Verrouillage exclusif PESSIMISTIC_WRITE (SELECT ... FOR UPDATE) sur les TripSegment concernés.
+     * 4. Verrouillage ordonné (segmentOrder ASC) pour éliminer mathématiquement tout risque de deadlock (Dijkstra).
+     * 5. Vérification in-lock de la capacité restante contre l'état réel et frais en base de données.
+     * 6. Décrémentation atomique des places et génération des BookingSegment.
+     * 7. Rollback automatique en cas d'exception.
      *
      * @throws SelfBookingNotAllowedException Si le passager est le conducteur
      * @throws TripNotBookableException Si le trajet n'est plus ouvert ou est déjà parti
@@ -151,12 +162,27 @@ final class RideBookingManager
         TripStop $alightingStop,
         int $seats = 1,
     ): Booking {
+        // --- 1. Fast-fail static input guards (Outside transaction to avoid DB locks on invalid input) ---
         if ($seats < 1) {
             throw new InvalidTripSegmentException('Vous devez réserver au moins 1 place.');
         }
 
         if ($trip->getDriver()?->getId() !== null && $trip->getDriver()?->getId() === $passenger->getId()) {
             throw new SelfBookingNotAllowedException();
+        }
+
+        if ($boardingStop->getTrip()?->getId() !== $trip->getId()
+            || $alightingStop->getTrip()?->getId() !== $trip->getId()
+        ) {
+            throw new InvalidTripSegmentException('Les arrêts sélectionnés n\'appartiennent pas à ce trajet.');
+        }
+
+        if ($boardingStop->getStopOrder() >= $alightingStop->getStopOrder()) {
+            throw new InvalidTripSegmentException(sprintf(
+                'L\'arrêt de descente (#%d) doit être postérieur à l\'arrêt de montée (#%d).',
+                $alightingStop->getStopOrder(),
+                $boardingStop->getStopOrder()
+            ));
         }
 
         if ($trip->getStatus() !== TripStatus::SCHEDULED) {
@@ -167,54 +193,77 @@ final class RideBookingManager
             throw new TripNotBookableException('L\'horaire de montée pour ce tronçon est déjà dépassé.');
         }
 
-        $segments = $this->resolveSegments($trip, $boardingStop, $alightingStop);
+        // --- 2. ACID Transaction with Pessimistic Locking (T-202) ---
+        return $this->entityManager->wrapInTransaction(function (EntityManagerInterface $em) use (
+            $passenger,
+            $trip,
+            $boardingStop,
+            $alightingStop,
+            $seats
+        ): Booking {
+            // A. Verrouiller et rafraîchir le trajet (protège contre une annulation conducteur simultanée)
+            $em->lock($trip, LockMode::PESSIMISTIC_WRITE);
+            $em->refresh($trip);
 
-        // Vérification stricte de capacité sur CHAQUE segment intermédiaire
-        foreach ($segments as $segment) {
-            if ($segment->getAvailableSeats() < $seats) {
-                $segmentDetails = sprintf(
-                    '%s → %s',
-                    $segment->getFromStop()?->getCity()?->getName() ?? 'Départ',
-                    $segment->getToStop()?->getCity()?->getName() ?? 'Arrivée'
-                );
-                throw new SeatsNotAvailableException(
-                    requested: $seats,
-                    available: $segment->getAvailableSeats(),
-                    segmentDetails: $segmentDetails
-                );
+            if ($trip->getStatus() !== TripStatus::SCHEDULED) {
+                throw new TripNotBookableException('Ce trajet n\'est plus ouvert à la réservation (annulé ou déjà terminé).');
             }
-        }
 
-        $unitPrice = 0;
-        foreach ($segments as $segment) {
-            $segment->setAvailableSeats($segment->getAvailableSeats() - $seats);
-            $unitPrice += $segment->getPrice();
-        }
+            // B. Acquire exclusive write lock (SELECT ... FOR UPDATE + HINT_REFRESH) strictly ordered by segmentOrder ASC
+            $segments = $this->resolveSegments($trip, $boardingStop, $alightingStop, lockForUpdate: true);
 
-        $booking = (new Booking())
-            ->setPassenger($passenger)
-            ->setTrip($trip)
-            ->setBoardingStop($boardingStop)
-            ->setAlightingStop($alightingStop)
-            ->setSeatsBooked($seats)
-            ->setTotalPrice($unitPrice * $seats)
-            ->setStatus(BookingStatus::CONFIRMED)
-            ->setCreatedAt(new \DateTimeImmutable());
+            // C. Re-verify seat capacity within the locked critical section (against fresh DB rows)
+            $unitPrice = 0;
+            foreach ($segments as $segment) {
+                if ($segment->getAvailableSeats() < $seats) {
+                    $segmentDetails = sprintf(
+                        '%s → %s',
+                        $segment->getFromStop()?->getCity()?->getName() ?? 'Départ',
+                        $segment->getToStop()?->getCity()?->getName() ?? 'Arrivée'
+                    );
+                    throw new SeatsNotAvailableException(
+                        requested: $seats,
+                        available: $segment->getAvailableSeats(),
+                        segmentDetails: $segmentDetails
+                    );
+                }
+                $unitPrice += $segment->getPrice();
+            }
 
-        $this->entityManager->persist($booking);
+            // D. Atomically decrement seats on each locked atomic segment
+            foreach ($segments as $segment) {
+                $segment->setAvailableSeats($segment->getAvailableSeats() - $seats);
+            }
 
-        foreach ($segments as $segment) {
-            $bookingSegment = (new BookingSegment())
-                ->setBooking($booking)
-                ->setSegment($segment)
-                ->setSeatsCount($seats);
+            // E. Instantiate confirmed Booking aggregate
+            $booking = (new Booking())
+                ->setPassenger($passenger)
+                ->setTrip($trip)
+                ->setBoardingStop($boardingStop)
+                ->setAlightingStop($alightingStop)
+                ->setSeatsBooked($seats)
+                ->setTotalPrice($unitPrice * $seats)
+                ->setStatus(BookingStatus::CONFIRMED)
+                ->setCreatedAt(new \DateTimeImmutable());
 
-            $this->entityManager->persist($bookingSegment);
-        }
+            $em->persist($booking);
 
-        $this->entityManager->flush();
+            // F. Create junction BookingSegments
+            foreach ($segments as $segment) {
+                $bookingSegment = (new BookingSegment())
+                    ->setBooking($booking)
+                    ->setSegment($segment)
+                    ->setSeatsCount($seats);
 
-        return $booking;
+                $em->persist($bookingSegment);
+                $booking->getBookingSegments()->add($bookingSegment);
+            }
+
+            // Flush all updates atomically within the transaction
+            $em->flush();
+
+            return $booking;
+        });
     }
 
     /**

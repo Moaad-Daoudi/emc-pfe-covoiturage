@@ -6,6 +6,7 @@ use App\Entity\Trip;
 use App\Entity\TripSegment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\LockMode;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 class TripSegmentRepository extends ServiceEntityRepository
@@ -38,8 +39,9 @@ class TripSegmentRepository extends ServiceEntityRepository
         $query = $qb->getQuery();
 
         if ($lockForUpdate) {
-            // Préparé pour T-202 (à exécuter obligatoirement dans une transaction)
             $query->setLockMode(LockMode::PESSIMISTIC_WRITE);
+            // Force Doctrine à écraser l'Identity Map avec les données fraîches verrouillées en BDD
+            $query->setHint(Query::HINT_REFRESH, true);
         }
 
         return $query->getResult();

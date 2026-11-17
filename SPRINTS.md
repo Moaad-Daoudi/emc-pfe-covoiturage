@@ -110,7 +110,7 @@ flowchart LR
 - [x] **T-201: Segment Inventory & Booking Engine**
   - Create the `BookingService` domain service.
   - Segment overlap check: Booking from stop $i$ to stop $j$ validates that all atomic segments $[i, i+1], ..., [j-1, j]$ satisfy `availableSeats >= requestedSeats`.
-- [ ] **T-202: Concurrency Control & Pessimistic Locking**
+- [x] **T-202: Concurrency Control & Pessimistic Locking**
   - Wrap the booking logic inside `$entityManager->wrapInTransaction()`.
   - Execute pessimistic write locks (`LockMode::PESSIMISTIC_WRITE` / `SELECT ... FOR UPDATE`) on target `TripSegment` entities.
   - Decrement seats atomically; trigger automatic transaction rollback if capacity is exceeded.
