@@ -7,6 +7,8 @@ services:
     restart: unless-stopped
     volumes:
       - .:/var/www/html
+      - php_cache:/var/www/html/var/cache
+      - php_log:/var/www/html/var/log
     environment:
       APP_ENV: dev
       APP_SECRET: 3f7e91a0b5c4d8e2f1a6c8e9b0d2f4a6
@@ -58,3 +60,5 @@ networks:
 
 volumes:
   db_data:
+  php_cache:
+  php_log:
