@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}SafarCar Maroc — Covoiturage Régional Haut de Gamme{% endblock %}</title>
+        <title>{% block title %}SafarCar Maroc — Covoiturage Régional{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🚗</text></svg>">
         
         <!-- Google Fonts: Plus Jakarta Sans -->
@@ -64,7 +64,7 @@
                 <div class="flex items-center gap-8">
                     <a href="{{ path('app_home') }}" class="flex items-center gap-2 group">
                         <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-700 to-brand-500 flex items-center justify-center text-white font-bold text-lg shadow-sm shadow-brand-500/20 group-hover:scale-105 transition-transform">
-                            S
+                            {{ ux_icon('lucide:car', {class: 'w-5 h-5 text-white'}) }}
                         </div>
                         <div class="flex items-center gap-1.5">
                             <span class="font-extrabold text-xl tracking-tight text-slate-900">Safar<span class="text-brand-600">Car</span></span>
@@ -74,16 +74,20 @@
 
                     <!-- Navigation Links -->
                     <nav class="hidden md:flex items-center gap-1 text-sm font-medium">
-                        <a href="{{ path('app_home') }}" class="px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') == 'app_home' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
+                        <a href="{{ path('app_home') }}" class="inline-flex items-center px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') == 'app_home' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
+                            {{ ux_icon('lucide:search', {class: 'w-4 h-4 mr-1.5 text-slate-400 group-hover:text-brand-600'}) }}
                             Rechercher
                         </a>
-                        <a href="{{ path('app_driver_trip_new') }}" class="px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') starts with 'app_driver_trip_new' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
+                        <a href="{{ path('app_driver_trip_new') }}" class="inline-flex items-center px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') starts with 'app_driver_trip_new' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
+                            {{ ux_icon('lucide:map-pin', {class: 'w-4 h-4 mr-1.5 text-slate-400'}) }}
                             Publier un trajet
                         </a>
-                        <a href="{{ path('app_passenger_bookings') }}" class="px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') == 'app_passenger_bookings' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
+                        <a href="{{ path('app_passenger_bookings') }}" class="inline-flex items-center px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') == 'app_passenger_bookings' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
+                            {{ ux_icon('lucide:calendar', {class: 'w-4 h-4 mr-1.5 text-slate-400'}) }}
                             Mes réservations
                         </a>
-                        <a href="{{ path('app_driver_trips') }}" class="px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') == 'app_driver_trips' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
+                        <a href="{{ path('app_driver_trips') }}" class="inline-flex items-center px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') == 'app_driver_trips' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
+                            {{ ux_icon('lucide:user', {class: 'w-4 h-4 mr-1.5 text-slate-400'}) }}
                             Espace conducteur
                         </a>
                     </nav>
@@ -112,10 +116,12 @@
                     {% else %}
                         <!-- Demo 1-Click Login modal helper or Direct Login -->
                         <a href="{{ path('app_login') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 hover:text-brand-600 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition">
-                            Connexion
+                            {{ ux_icon('lucide:user', {class: 'w-4 h-4 text-slate-500'}) }}
+                            <span>Connexion</span>
                         </a>
                         <a href="{{ path('app_login') }}" class="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-sm shadow-brand-600/20 transition hover:shadow-md">
                             <span>S'inscrire</span>
+                            {{ ux_icon('lucide:arrow-right', {class: 'w-4 h-4'}) }}
                         </a>
                     {% endif %}
                 </div>
