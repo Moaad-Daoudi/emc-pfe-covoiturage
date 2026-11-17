@@ -77,13 +77,13 @@
                         <a href="{{ path('app_home') }}" class="px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') == 'app_home' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
                             Rechercher
                         </a>
-                        <a href="{{ path('app_home') }}#publish" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="{{ path('app_driver_trip_new') }}" class="px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') starts with 'app_driver_trip_new' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
                             Publier un trajet
                         </a>
                         <a href="{{ path('app_passenger_bookings') }}" class="px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') == 'app_passenger_bookings' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
                             Mes réservations
                         </a>
-                        <a href="{{ path('app_home') }}#driver" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition">
+                        <a href="{{ path('app_driver_trips') }}" class="px-3 py-1.5 rounded-lg {% if app.request.attributes.get('_route') == 'app_driver_trips' %}text-brand-700 bg-brand-50/80 font-semibold{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %} transition">
                             Espace conducteur
                         </a>
                     </nav>

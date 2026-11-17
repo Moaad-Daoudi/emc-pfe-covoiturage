@@ -158,9 +158,13 @@ flowchart LR
   - Real-time booking card with remaining countdown, boarding/drop-off points, direct driver call & WhatsApp CTAs.
   - Interactive actions: digital boarding pass, itinerary link, and atomic cancellation modal with automatic refund calculation.
   - Completed trip review trigger button and AXA insurance guarantee banner.
-- [ ] **T-306: Screen S05 — Publish a Trip (`/driver/trips/new`)**
-  - Stimulus controller for dynamically adding and removing intermediate stops without page reloads.
-  - Vehicle selector and default price inputs.
+- [x] **T-306: Screen S05 — Publish a Trip (`/driver/trips/new`)**
+  - High-end certified driver banner matching Stitch S05 with Level 3 verification card (CNI & Permis validés, 4.96 ★).
+  - Multi-stop itinerary configuration with dynamic intermediate stops (`⊕ Ajouter une escale`, `✕ Retirer`).
+  - Moroccan license plate styled vehicle selector (`26842 | أ | 33`, `71984 | ب | 26`).
+  - Algorithm-compliant price distribution adhering to ADM barème with dynamic per-segment recalculation.
+  - Sticky right column with OSRM optimal route schema, live earnings calculation (`seats * price`), 24h payout guarantee, and direct publication CTA.
+  - Transactional persistence of `Trip`, ordered `TripStop`s, and consecutive atomic `TripSegment`s.
 - [ ] **T-307: Screens S06 & S07 — Driver Space & Manifest (`/driver/trips`)**
   - S06: Trip list with quick-action "Mark as Completed" button to streamline jury testing.
   - S07: Clear manifest showing passenger boardings and exits per stop with contact information.
