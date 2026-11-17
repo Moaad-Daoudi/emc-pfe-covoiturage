@@ -193,10 +193,12 @@ flowchart LR
   - Cache layer (`CacheInterface`, TTL 30 days) to prevent redundant queries and avoid 429 rate limits.
   - Zero-downtime offline fallback dictionary for major Moroccan road hubs (Agadir, Marrakech, Casablanca, Rabat, Essaouira, Chichaoua, Tanger, Fès, Meknès...).
   - Structured DTO `GeocodingResult` and 5 unit tests with 39 assertions passing (`tests/Unit/NominatimServiceTest.php`).
-- [ ] **T-402: OSRM Routing Service (`OsrmService`)**
-  - Call OSRM API (`/route/v1/driving/`) with stop sequences.
-  - Retrieve accurate road distance in kilometers, estimated duration, and GeoJSON polyline.
-  - Resilient fallback handling in case of network timeouts.
+- [x] **T-402: OSRM Routing Service (`OsrmService`)**
+  - OSRM REST API client (`/route/v1/driving/`) with formatted coordinates (`lon,lat;lon,lat`).
+  - Road distance extraction in km, duration in minutes, formatted display (`3h45`), and GeoJSON `LineString` polyline.
+  - Caching layer (`CacheInterface`, TTL 30 days) to prevent repeated routing requests.
+  - Zero-downtime offline Moroccan motorway matrix (`MOROCCAN_ROAD_MATRIX`) + Haversine winding factor fallback for isolated/offline containers.
+  - Structured DTO `RouteResult` and 6 unit tests with 39 assertions passing (`tests/Unit/OsrmServiceTest.php`).
 - [ ] **T-403: Suggested Pricing Calculator (`PricingService`)**
   - Transparent pricing formula: $Price = BaseCost + (Distance_{km} \times Rate_{km}) \times DegressiveFactor$.
   - Automated breakdown of suggested pricing across all intermediate legs.
