@@ -199,9 +199,12 @@ flowchart LR
   - Caching layer (`CacheInterface`, TTL 30 days) to prevent repeated routing requests.
   - Zero-downtime offline Moroccan motorway matrix (`MOROCCAN_ROAD_MATRIX`) + Haversine winding factor fallback for isolated/offline containers.
   - Structured DTO `RouteResult` and 6 unit tests with 39 assertions passing (`tests/Unit/OsrmServiceTest.php`).
-- [ ] **T-403: Suggested Pricing Calculator (`PricingService`)**
-  - Transparent pricing formula: $Price = BaseCost + (Distance_{km} \times Rate_{km}) \times DegressiveFactor$.
-  - Automated breakdown of suggested pricing across all intermediate legs.
+- [x] **T-403: Suggested Pricing Calculator (`PricingService`)**
+  - Algorithm-compliant fair pricing model strictly adhering to Moroccan non-commercial transport law and ADM barème.
+  - Formula: $Price = \text{round\_to\_5}((BaseCost + (Distance_{km} \times Rate_{km})) \times DegressiveFactor \times ComfortMultiplier)$.
+  - Multi-segment trip breakdown calculating proportional and degressive prices across intermediate stops.
+  - Regulatory price ceiling check (`isPriceCompliant()`) guarding against commercial rates (> 0.65 MAD/km).
+  - Structured DTO `PricingBreakdown` and 4 unit tests with 28 assertions passing (`tests/Unit/PricingServiceTest.php`).
 - [ ] **T-404: Front-End Interactive Map Integration (Leaflet.js)**
   - Stimulus controller rendering the map on trip publish (S05) and trip details (S02).
   - Draw the real OSRM route geometry and place custom markers for all stops.
